@@ -7,10 +7,8 @@ import {
   isSameOriginMutation,
   readJsonBody,
 } from "@/lib/http/api";
-import {
-  consumeRequestRateLimit,
-  rateLimitHeaders,
-} from "@/lib/security/rate-limit";
+import { rateLimitHeaders } from "@/lib/security/rate-limit";
+import { consumeRequestRateLimitDurable } from "@/lib/security/rate-limit-durable";
 import { getSoulRepository } from "@/lib/soul/repository";
 
 export const runtime = "nodejs";
@@ -41,10 +39,14 @@ const RedeemBodySchema = z
   .strict();
 
 export async function POST(request: NextRequest) {
-  const rateLimit = consumeRequestRateLimit(request, "prototype-redeem", {
-    limit: 20,
-    windowMs: 60_000,
-  });
+  const rateLimit = await consumeRequestRateLimitDurable(
+    request,
+    "prototype-redeem",
+    {
+      limit: 20,
+      windowMs: 60_000,
+    },
+  );
   const limitHeaders = rateLimitHeaders(rateLimit);
   if (!rateLimit.allowed) {
     return apiError(

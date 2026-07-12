@@ -32,3 +32,11 @@
 3. Playwright tap â†’ redeem.
 4. Accessibility pass on ops panels.
 5. Optional custom domain under owned brands.
+
+## 2026-07-12 — continuous 0.7.0
+
+- Member demo APIs: me, profile, cards, memories, rewards, settings (LIVE DATA badge path).
+- Envelope unwrap in useMemberResource / memberMutation.
+- Durable rate-limit boundary (Tipjai-style fail-degraded) on redeem + admin login.
+- /universities campus story page; nav + sitemap + robots.
+- Version 0.7.0.

@@ -16,6 +16,8 @@ export function SiteFooter() {
       <div className="footer-links" aria-label="ลิงก์ส่วนท้าย">
         <Link href="/tap/soul_demo_7k3m9q2v">Tap experience</Link>
         <Link href="/collections">Collections</Link>
+        <Link href="/universities">Universities</Link>
+        <Link href="/member/wallet">Member</Link>
         <Link href="/admin">Control Center</Link>
         <Link href="/status">System status</Link>
         <Link href="/privacy">

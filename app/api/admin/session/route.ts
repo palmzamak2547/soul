@@ -7,10 +7,8 @@ import {
   isSameOriginMutation,
   readJsonBody,
 } from "@/lib/http/api";
-import {
-  consumeRequestRateLimit,
-  rateLimitHeaders,
-} from "@/lib/security/rate-limit";
+import { rateLimitHeaders } from "@/lib/security/rate-limit";
+import { consumeRequestRateLimitDurable } from "@/lib/security/rate-limit-durable";
 import {
   AdminAuthConfigurationError,
   clearAdminSessionCookie,
@@ -28,10 +26,14 @@ const LoginBodySchema = z
   .strict();
 
 export async function POST(request: NextRequest) {
-  const rateLimit = consumeRequestRateLimit(request, "admin-login", {
-    limit: 5,
-    windowMs: 10 * 60_000,
-  });
+  const rateLimit = await consumeRequestRateLimitDurable(
+    request,
+    "admin-login",
+    {
+      limit: 5,
+      windowMs: 10 * 60_000,
+    },
+  );
   const limitHeaders = rateLimitHeaders(rateLimit);
   if (!rateLimit.allowed) {
     return apiError(

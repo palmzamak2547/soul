@@ -255,7 +255,16 @@ export function useMemberResource<T>(endpoint: string, fallback: T): ResourceSta
           signal: controller.signal,
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const payload = (await response.json()) as T;
+        const raw = (await response.json()) as unknown;
+        // Support both envelope { ok, data } (SOUL/Tipjai style) and bare JSON.
+        const payload =
+          raw &&
+          typeof raw === "object" &&
+          "ok" in raw &&
+          (raw as { ok?: boolean }).ok === true &&
+          "data" in raw
+            ? ((raw as { data: T }).data as T)
+            : (raw as T);
         if (active) {
           setData(payload);
           setSource("api");
@@ -296,7 +305,16 @@ export async function memberMutation<TBody, TResult>(
       body: JSON.stringify(body),
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return { data: (await response.json()) as TResult, source: "api" };
+    const raw = (await response.json()) as unknown;
+    const data =
+      raw &&
+      typeof raw === "object" &&
+      "ok" in raw &&
+      (raw as { ok?: boolean }).ok === true &&
+      "data" in raw
+        ? ((raw as { data: TResult }).data as TResult)
+        : (raw as TResult);
+    return { data, source: "api" };
   } catch {
     await new Promise((resolve) => window.setTimeout(resolve, 720));
     return { data: fallback, source: "demo" };

@@ -9,6 +9,7 @@ const links = [
   { href: "/#experience", label: "ประสบการณ์" },
   { href: "/#memories", label: "ความทรงจำ" },
   { href: "/collections", label: "คอลเลกชัน" },
+  { href: "/universities", label: "มหาวิทยาลัย" },
   { href: "/member/wallet", label: "Member" },
   { href: "/admin", label: "Control Center" },
 ];
