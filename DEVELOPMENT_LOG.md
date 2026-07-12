@@ -32,3 +32,9 @@
 4. Member card detail / transfer / memory form deep routes.
 5. Playwright smoke for tap â†’ redeem happy path.
 6. Accessibility pass on admin/ops panels (focus traps, live regions).
+
+## 2026-07-12 — pass 4 (member deep routes)
+
+- /member/cards/[cardId] detail, transfer, memory create/edit.
+- Version `0.5.0`.
+
