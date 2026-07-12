@@ -120,14 +120,11 @@ export function LandingPage() {
             >
               <Link className="button button-primary" href="/tap/soul_demo_7k3m9q2v">
                 <Radio size={20} weight="bold" aria-hidden="true" />
-                ลอง Tap Experience
+                ลองแตะการ์ด
                 <ArrowRight size={18} weight="bold" aria-hidden="true" />
               </Link>
               <Link className="button button-ghost" href="/collections">
                 ดูคอลเลกชัน
-              </Link>
-              <Link className="button button-ghost" href="/member/wallet">
-                เปิด Member space
               </Link>
             </motion.div>
             <motion.div
@@ -136,10 +133,21 @@ export function LandingPage() {
               initial={{ opacity: 0 }}
               transition={{ duration: 0.8, delay: 0.42 }}
             >
-              <span><CheckCircle size={17} weight="fill" /> No app required</span>
-              <span><ShieldCheck size={17} weight="fill" /> Privacy-first</span>
-              <span><Lightning size={17} weight="fill" /> Under 7 seconds</span>
+              <span><CheckCircle size={17} weight="fill" /> ไม่ต้องลงแอป</span>
+              <span><ShieldCheck size={17} weight="fill" /> คุมความเป็นส่วนตัวได้</span>
+              <span><Lightning size={17} weight="fill" /> ปลดล็อกในไม่กี่วินาที</span>
             </motion.div>
+            <motion.p
+              animate={{ opacity: 1 }}
+              className="hero-secondary-link"
+              initial={{ opacity: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              มีการ์ดแล้ว?{" "}
+              <Link href="/member/wallet">เข้าพื้นที่สมาชิก</Link>
+              {" · "}
+              <Link href="/universities">สำหรับมหาวิทยาลัย</Link>
+            </motion.p>
           </div>
 
           <motion.div className="hero-visual" style={{ y: imageY }}>

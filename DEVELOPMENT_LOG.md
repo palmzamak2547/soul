@@ -25,6 +25,15 @@
 - Fourth seed card (Reunion Echo); not-found recovery; collaborator-safe git rules.
 - Version `0.6.0`.
 
+## 2026-07-12 â€” UX polish 0.8.0
+
+- Slim primary header (3 links + CTA); mobile drawer with backdrop + scroll lock
+- Hero CTAs reduced to 2; Thai trust chips; secondary text links
+- Member bottom tabbar 4 slots, larger labels, safe-area
+- Member page headers more readable
+- Admin login clarity + dual exit links
+- Tap ready panel shows card name/serial + primary button style
+
 ## Next candidates (auto queue)
 
 1. Postgres repository swap (migration exists under `supabase/migrations`).
@@ -33,7 +42,7 @@
 4. Accessibility pass on ops panels.
 5. Optional custom domain under owned brands.
 
-## 2026-07-12 — continuous 0.7.0
+## 2026-07-12 ï¿½ continuous 0.7.0
 
 - Member demo APIs: me, profile, cards, memories, rewards, settings (LIVE DATA badge path).
 - Envelope unwrap in useMemberResource / memberMutation.
@@ -41,7 +50,7 @@
 - /universities campus story page; nav + sitemap + robots.
 - Version 0.7.0.
 
-## 2026-07-12 — bugfix 0.7.2
+## 2026-07-12 ï¿½ bugfix 0.7.2
 
 Critical user-facing bugs fixed:
 1. useMemberResource infinite re-fetch (fallback in deps + inline .slice())

@@ -20,11 +20,29 @@ import { usePathname } from "next/navigation";
 import { type ReactNode, useState } from "react";
 import { demoProfile } from "./member-data";
 
-const navigation = [
-  { href: "/member/wallet", label: "หน้าหลัก", icon: House },
-  { href: "/member/wallet#collection", label: "การ์ดของฉัน", icon: CardsThree },
-  { href: "/member/rewards", label: "รางวัล", icon: Gift },
-  { href: "/member/profile", label: "โปรไฟล์", icon: UserCircle },
+type ShellNavItem = {
+  href: string;
+  label: string;
+  icon: typeof House;
+  match: string;
+  accent?: boolean;
+};
+
+const navigation: ShellNavItem[] = [
+  { href: "/member/wallet", label: "หน้าหลัก", icon: House, match: "/member/wallet" },
+  { href: "/member/rewards", label: "รางวัล", icon: Gift, match: "/member/rewards" },
+  { href: "/member/profile", label: "โปรไฟล์", icon: UserCircle, match: "/member/profile" },
+];
+
+const mobileNav: ShellNavItem[] = [
+  ...navigation,
+  {
+    href: "/member/cards/founder-088/memories/new",
+    label: "เพิ่ม",
+    icon: Plus,
+    match: "/memories/new",
+    accent: true,
+  },
 ];
 
 function SoulMark({ light = false }: { light?: boolean }) {
@@ -54,11 +72,20 @@ function DemoChip() {
 
 function MemberNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const sideLinks = [
+    ...navigation,
+    { href: "/member/wallet#collection", label: "การ์ดของฉัน", icon: CardsThree, match: "#collection" },
+    { href: "/member/settings", label: "ตั้งค่า", icon: SlidersHorizontal, match: "/member/settings" },
+  ];
   return (
     <nav aria-label="พื้นที่สมาชิก" className="flex flex-col gap-1.5">
-      {navigation.map(({ href, label, icon: Icon }) => {
-        const route = href.split("#")[0];
-        const active = route === "/member/wallet" ? pathname === route : pathname.startsWith(route);
+      {sideLinks.map(({ href, label, icon: Icon, match }) => {
+        const active =
+          match === "/member/wallet"
+            ? pathname === "/member/wallet" || pathname === "/member"
+            : match.startsWith("#")
+              ? false
+              : pathname.startsWith(match);
         return (
           <Link
             className={`group flex min-h-12 items-center gap-3 rounded-2xl px-3.5 text-[13px] font-semibold transition ${
@@ -233,18 +260,40 @@ function MemberShellFrame({
         </motion.div>
       </main>
 
-      <nav aria-label="เมนูสมาชิกบนมือถือ" className="fixed inset-x-3 bottom-3 z-30 grid grid-cols-5 rounded-[22px] border border-white/70 bg-[rgba(7,16,31,.94)] p-1.5 shadow-[0_18px_50px_rgba(7,16,31,.3)] backdrop-blur-xl lg:hidden">
-        {navigation.map(({ href, label, icon: Icon }) => {
-          const route = href.split("#")[0];
-          const active = route === "/member/wallet" ? pathname === route : pathname.startsWith(route);
+      <nav
+        aria-label="เมนูสมาชิกบนมือถือ"
+        className="member-mobile-tabbar fixed inset-x-3 bottom-3 z-30 grid grid-cols-4 gap-1 rounded-[22px] border border-white/70 bg-[rgba(7,16,31,.94)] p-1.5 shadow-[0_18px_50px_rgba(7,16,31,.3)] backdrop-blur-xl lg:hidden"
+        style={{ paddingBottom: "max(0.35rem, env(safe-area-inset-bottom))" }}
+      >
+        {mobileNav.map(({ href, label, icon: Icon, match, accent }) => {
+          const active = match.includes("memories")
+            ? pathname.includes("/memories/")
+            : match === "/member/wallet"
+              ? pathname === "/member/wallet" || pathname === "/member"
+              : pathname.startsWith(match);
           return (
-            <Link aria-label={label} className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl text-[7px] font-semibold ${active ? "bg-white text-[var(--ink)]" : "text-white/50"}`} href={href} key={href}>
-              <Icon className={active ? "text-[var(--pink)]" : ""} size={18} weight={active ? "fill" : "regular"} />
+            <Link
+              aria-current={active ? "page" : undefined}
+              aria-label={label}
+              className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[10px] font-semibold leading-none transition ${
+                accent
+                  ? "bg-[var(--pink)] text-white shadow-[0_8px_20px_rgba(233,30,99,.35)]"
+                  : active
+                    ? "bg-white text-[var(--ink)]"
+                    : "text-white/55"
+              }`}
+              href={href}
+              key={href}
+            >
+              <Icon
+                className={accent ? "text-white" : active ? "text-[var(--pink)]" : ""}
+                size={20}
+                weight={active || accent ? "fill" : "regular"}
+              />
               {label}
             </Link>
           );
         })}
-        <Link aria-label="เพิ่มความทรงจำ" className="flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--pink)] text-[7px] font-semibold text-white" href="/member/cards/founder-088/memories/new"><Plus size={18} weight="bold" />เพิ่มใหม่</Link>
       </nav>
     </div>
   );
@@ -262,13 +311,17 @@ export function MemberPageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-5 border-b border-[var(--line)] pb-7 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p className="mb-3 [font-family:var(--font-mono)] text-[8px] font-bold uppercase tracking-[0.16em] text-[var(--pink-strong)]">{kicker}</p>
-        <h1 className="m-0 [font-family:var(--font-display)] text-[clamp(30px,4vw,48px)] font-semibold tracking-[-0.055em]">{title}</h1>
-        {description ? <p className="mb-0 mt-3 max-w-2xl text-[12px] leading-7 text-[var(--muted)] sm:text-[13px]">{description}</p> : null}
+    <div className="flex flex-col gap-4 border-b border-[var(--line)] pb-6 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:pb-8">
+      <div className="min-w-0">
+        <p className="mb-2.5 [font-family:var(--font-mono)] text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--pink-strong)]">{kicker}</p>
+        <h1 className="m-0 [font-family:var(--font-display)] text-[clamp(28px,3.6vw,42px)] font-semibold leading-[1.08] tracking-[-0.05em]">{title}</h1>
+        {description ? (
+          <p className="mb-0 mt-3 max-w-2xl text-[13px] leading-7 text-[var(--muted)] sm:text-[14px] sm:leading-7">
+            {description}
+          </p>
+        ) : null}
       </div>
-      {action}
+      {action ? <div className="shrink-0 self-start sm:self-end">{action}</div> : null}
     </div>
   );
 }

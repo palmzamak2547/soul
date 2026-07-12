@@ -257,10 +257,15 @@ export function TapExperience({ token }: { token: string }) {
                 <p className="section-kicker">SOUL TAP EXPERIENCE</p>
                 <h1>แตะหนึ่งครั้ง<br /><em>ความทรงจำทั้งชีวิต</em></h1>
                 <p>จำลองสิ่งที่เกิดขึ้นเมื่อโทรศัพท์แตะการ์ด SOUL — browser จะเปิดเอง ไม่ต้องติดตั้งแอป</p>
-                <button className="button tap-start-button" onClick={runSequence} type="button">
-                  <Radio size={21} weight="bold" /> จำลองการแตะ NFC <ArrowRight size={18} />
+                <button className="button button-primary tap-start-button" onClick={runSequence} type="button">
+                  <Radio size={21} weight="bold" aria-hidden="true" /> จำลองการแตะ NFC <ArrowRight size={18} aria-hidden="true" />
                 </button>
-                <span className="demo-disclaimer">Prototype · ไม่มีการอ่าน NFC จริงในหน้านี้</span>
+                <p className="demo-disclaimer">โหมดสาธิต · ยังไม่ได้อ่านชิป NFC จริงในเบราว์เซอร์</p>
+                <p className="demo-card-chip">
+                  การ์ด: <strong>{card.displayName}</strong>
+                  <span aria-hidden="true"> · </span>
+                  <span>{card.serial}</span>
+                </p>
               </motion.div>
             )}
 

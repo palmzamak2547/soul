@@ -97,33 +97,51 @@ function AdminLogin({ onSignedIn }: { onSignedIn: () => void }) {
   return (
     <main className="admin-login" id="main-content">
       <div className="admin-login-brand"><Brand /></div>
-      <section className="login-card">
-        <div className="login-icon"><LockKey size={28} weight="duotone" /></div>
+      <section className="login-card" aria-labelledby="admin-login-title">
+        <div className="login-icon" aria-hidden="true"><LockKey size={28} weight="duotone" /></div>
         <p className="section-kicker">SOUL / CONTROL CENTER</p>
-        <h1>ยืนยันสิทธิ์ผู้ดูแล</h1>
-        <p>หลังบ้านนี้ใช้ข้อมูลสมมติและ session แบบ HttpOnly เพื่อสาธิต security boundary ของ prototype</p>
-        <form onSubmit={submit}>
-          <label>
-            Demo access code
+        <h1 id="admin-login-title">เข้าสู่ระบบผู้ดูแล</h1>
+        <p>
+          พื้นที่นี้ใช้ข้อมูลสมมติเพื่อสาธิตการดูแลการ์ด เนื้อหา และรางวัล
+          — session เป็น HttpOnly และหมดอายุอัตโนมัติ
+        </p>
+        <form onSubmit={submit} noValidate>
+          <label htmlFor="admin-access-code">
+            รหัสเข้าถึง
             <input
               autoComplete="current-password"
               autoFocus
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="กรอกรหัสจากผู้ดูแล deployment"
+              id="admin-access-code"
+              onChange={(event) => {
+                setPassword(event.target.value);
+                if (state === "error") setState("idle");
+              }}
+              placeholder="กรอกรหัสจากผู้ดูแลระบบ"
               required
               type="password"
               value={password}
             />
           </label>
-          {state === "error" && <div className="login-error" role="alert"><WarningCircle size={17} /> ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจรหัสและลองอีกครั้ง</div>}
-          <button className="button button-primary button-full" disabled={state === "loading"} type="submit">
+          {state === "error" ? (
+            <div className="login-error" role="alert">
+              <WarningCircle size={17} aria-hidden="true" />
+              รหัสไม่ถูกต้องหรือ session ตั้งค่าไม่ครบ ลองอีกครั้ง
+            </div>
+          ) : null}
+          <button className="button button-primary button-full" disabled={state === "loading" || password.length === 0} type="submit">
             {state === "loading" ? "กำลังตรวจสอบ…" : "เข้าสู่ Control Center"}
-            {state !== "loading" && <ArrowRight size={18} weight="bold" />}
+            {state !== "loading" && <ArrowRight size={18} weight="bold" aria-hidden="true" />}
           </button>
         </form>
-        <div className="login-security"><ShieldCheck size={17} weight="fill" /> Session หมดอายุอัตโนมัติ · ไม่เก็บรหัสใน browser</div>
+        <div className="login-security">
+          <ShieldCheck size={17} weight="fill" aria-hidden="true" />
+          ไม่เก็บรหัสใน browser · ใช้เฉพาะผู้ดูแลที่ได้รับอนุญาต
+        </div>
       </section>
-      <Link className="login-back" href="/">← กลับหน้าหลัก</Link>
+      <div className="login-footer-links">
+        <Link className="login-back" href="/">← กลับหน้าหลัก</Link>
+        <Link className="login-back" href="/tap/soul_demo_7k3m9q2v">ลอง tap demo</Link>
+      </div>
     </main>
   );
 }
