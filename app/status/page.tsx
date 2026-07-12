@@ -8,26 +8,31 @@ export const metadata: Metadata = {
 };
 
 async function loadHealth() {
-  const site =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://soulplatform.vercel.app";
-  try {
-    // Prefer same-origin absolute on Vercel; fallback to public URL.
-    const base =
-      process.env.VERCEL_URL != null
-        ? `https://${process.env.VERCEL_URL}`
-        : site;
-    const res = await fetch(`${base}/api/health`, {
-      cache: "no-store",
-      next: { revalidate: 0 },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as {
-      ok?: boolean;
-      data?: Record<string, unknown>;
-    };
-  } catch {
-    return null;
+  const candidates = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : null,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+    "https://soulplatform.vercel.app",
+  ].filter((value): value is string => Boolean(value));
+
+  for (const base of candidates) {
+    try {
+      const res = await fetch(`${base.replace(/\/$/, "")}/api/health`, {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      });
+      if (!res.ok) continue;
+      return (await res.json()) as {
+        ok?: boolean;
+        data?: Record<string, unknown>;
+      };
+    } catch {
+      // try next candidate
+    }
   }
+  return null;
 }
 
 export default async function StatusPage() {

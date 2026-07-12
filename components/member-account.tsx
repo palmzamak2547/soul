@@ -116,16 +116,37 @@ const demoSettings: MemberSettings = {
   ],
 };
 
+function isValidSettings(value: unknown): value is MemberSettings {
+  if (!value || typeof value !== "object") return false;
+  const v = value as Partial<MemberSettings>;
+  return (
+    typeof v.defaultPrivacy === "string" &&
+    Array.isArray(v.sessions) &&
+    typeof v.analytics === "boolean"
+  );
+}
+
 export function MemberSettingsPage() {
   const resource = useMemberResource<MemberSettings>("/api/member/settings", demoSettings);
-  const [settings, setSettings] = useState(demoSettings);
+  // Local override after user edits — base data derives from API without setState-in-effect.
+  const [localOverride, setLocalOverride] = useState<MemberSettings | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
   const [toast, setToast] = useState("");
   const [dangerOpen, setDangerOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [exporting, setExporting] = useState(false);
 
+  const base =
+    resource.source === "api" && isValidSettings(resource.data)
+      ? resource.data
+      : demoSettings;
+  const data = localOverride ?? base;
+
   function notify(message: string) { setToast(message); window.setTimeout(() => setToast(""), 2200); }
+
+  function patchLocal(values: Partial<MemberSettings>) {
+    setLocalOverride((current) => ({ ...(current ?? base), ...values }));
+  }
 
   async function persist(section: string, values: Partial<MemberSettings>) {
     setSaving(section);
@@ -143,7 +164,7 @@ export function MemberSettingsPage() {
 
   async function revokeSession(id: string) {
     await memberMutation(`/api/member/sessions/${id}`, {}, { ok: true, demo: true }, "DELETE");
-    setSettings((value) => ({ ...value, sessions: value.sessions.filter((session) => session.id !== id) }));
+    patchLocal({ sessions: data.sessions.filter((session) => session.id !== id) });
     notify("ออกจากระบบอุปกรณ์แล้ว");
   }
 
@@ -152,8 +173,6 @@ export function MemberSettingsPage() {
     setDangerOpen(false); notify("เริ่มช่วงรอลบบัญชี 30 วันแล้ว (Demo)");
   }
 
-  const data = resource.source === "api" && settings === demoSettings ? resource.data : settings;
-
   return (
     <div className="mx-auto w-full max-w-[1180px] px-4 py-7 sm:px-7 sm:py-10 lg:px-10 lg:py-12" id="privacy">
       <MemberPageHeader action={<DemoSourceBadge source={resource.source} />} description="ควบคุมสิ่งที่แชร์ การแจ้งเตือน อุปกรณ์ และสิทธิ์ในข้อมูลของคุณ" kicker="SETTINGS & PRIVACY" title="คุณเป็นคนกำหนดขอบเขต" />
@@ -161,12 +180,12 @@ export function MemberSettingsPage() {
 
       <div className="mt-7 space-y-5">
         <SettingsSection description="กำหนดค่าเริ่มต้นสำหรับเรื่องใหม่ คุณยังเปลี่ยนทีละเรื่องได้เสมอ" icon={LockKey} title="ความเป็นส่วนตัวของความทรงจำ">
-          <div className="grid gap-2 sm:grid-cols-3">{(["private", "circle", "public"] as const).map((value) => <button aria-pressed={data.defaultPrivacy === value} className={`min-h-[100px] rounded-[18px] border p-4 text-left transition ${data.defaultPrivacy === value ? "border-[var(--pink)] bg-[#fff4f7]" : "border-[var(--line)] bg-white"}`} key={value} onClick={() => { setSettings((current) => ({ ...current, defaultPrivacy: value })); void persist("privacy", { defaultPrivacy: value }); }} type="button"><div className="flex items-center justify-between"><strong className="text-[9px]">{privacyLabels[value].label}</strong>{data.defaultPrivacy === value ? <span className="grid size-5 place-items-center rounded-full bg-[var(--pink)] text-white"><Check size={11} weight="bold" /></span> : null}</div><p className="mb-0 mt-2 text-[7px] leading-4 text-[var(--muted)]">{privacyLabels[value].description}</p></button>)}</div>
-          <ToggleRow checked={data.analytics} description="วัดความลื่นไหลของการแตะและการโหลด โดยไม่เก็บเนื้อหาความทรงจำ" label="ข้อมูลการใช้งานแบบไม่ระบุตัวตน" onChange={(checked) => { setSettings((value) => ({ ...value, analytics: checked })); void persist("consent", { analytics: checked }); }} /><ToggleRow checked={data.marketing} description="ใช้กิจกรรมและคอลเลกชันที่สนใจเพื่อแนะนำเนื้อหา" label="การแนะนำแบบเฉพาะบุคคล" onChange={(checked) => { setSettings((value) => ({ ...value, marketing: checked })); void persist("consent", { marketing: checked }); }} />
+          <div className="grid gap-2 sm:grid-cols-3">{(["private", "circle", "public"] as const).map((value) => <button aria-pressed={data.defaultPrivacy === value} className={`min-h-[100px] rounded-[18px] border p-4 text-left transition ${data.defaultPrivacy === value ? "border-[var(--pink)] bg-[#fff4f7]" : "border-[var(--line)] bg-white"}`} key={value} onClick={() => { patchLocal({ defaultPrivacy: value }); void persist("privacy", { defaultPrivacy: value }); }} type="button"><div className="flex items-center justify-between"><strong className="text-[9px]">{privacyLabels[value].label}</strong>{data.defaultPrivacy === value ? <span className="grid size-5 place-items-center rounded-full bg-[var(--pink)] text-white"><Check size={11} weight="bold" /></span> : null}</div><p className="mb-0 mt-2 text-[7px] leading-4 text-[var(--muted)]">{privacyLabels[value].description}</p></button>)}</div>
+          <ToggleRow checked={data.analytics} description="วัดความลื่นไหลของการแตะและการโหลด โดยไม่เก็บเนื้อหาความทรงจำ" label="ข้อมูลการใช้งานแบบไม่ระบุตัวตน" onChange={(checked) => { patchLocal({ analytics: checked }); void persist("consent", { analytics: checked }); }} /><ToggleRow checked={data.marketing} description="ใช้กิจกรรมและคอลเลกชันที่สนใจเพื่อแนะนำเนื้อหา" label="การแนะนำแบบเฉพาะบุคคล" onChange={(checked) => { patchLocal({ marketing: checked }); void persist("consent", { marketing: checked }); }} />
         </SettingsSection>
 
         <SettingsSection description="เลือกเฉพาะสิ่งที่คุณอยากได้รับ เปลี่ยนได้ทันที" icon={Bell} title="การแจ้งเตือน">
-          <ToggleRow checked={data.emailMemoryReminders} description="เตือนวันครบรอบและเรื่องที่ตั้งใจกลับมาเปิด" label="Memory reminders ทางอีเมล" onChange={(checked) => { setSettings((value) => ({ ...value, emailMemoryReminders: checked })); void persist("notifications", { emailMemoryReminders: checked }); }} /><ToggleRow checked={data.emailRewards} description="เมื่อมีรางวัลใหม่หรือสิทธิ์ใกล้หมดอายุ" label="รางวัลและสิทธิ์" onChange={(checked) => { setSettings((value) => ({ ...value, emailRewards: checked })); void persist("notifications", { emailRewards: checked }); }} /><ToggleRow checked={data.pushTapAlerts} description="แจ้งเมื่อมีการแตะผิดปกติหรือ Claim ใหม่" label="ความปลอดภัยของการ์ด" onChange={(checked) => { setSettings((value) => ({ ...value, pushTapAlerts: checked })); void persist("notifications", { pushTapAlerts: checked }); }} /><ToggleRow checked={data.productUpdates} description="ฟีเจอร์และกิจกรรมใหม่ ไม่เกิน 2 ครั้งต่อเดือน" label="ข่าวสารจาก SOUL" onChange={(checked) => { setSettings((value) => ({ ...value, productUpdates: checked })); void persist("notifications", { productUpdates: checked }); }} />
+          <ToggleRow checked={data.emailMemoryReminders} description="เตือนวันครบรอบและเรื่องที่ตั้งใจกลับมาเปิด" label="Memory reminders ทางอีเมล" onChange={(checked) => { patchLocal({ emailMemoryReminders: checked }); void persist("notifications", { emailMemoryReminders: checked }); }} /><ToggleRow checked={data.emailRewards} description="เมื่อมีรางวัลใหม่หรือสิทธิ์ใกล้หมดอายุ" label="รางวัลและสิทธิ์" onChange={(checked) => { patchLocal({ emailRewards: checked }); void persist("notifications", { emailRewards: checked }); }} /><ToggleRow checked={data.pushTapAlerts} description="แจ้งเมื่อมีการแตะผิดปกติหรือ Claim ใหม่" label="ความปลอดภัยของการ์ด" onChange={(checked) => { patchLocal({ pushTapAlerts: checked }); void persist("notifications", { pushTapAlerts: checked }); }} /><ToggleRow checked={data.productUpdates} description="ฟีเจอร์และกิจกรรมใหม่ ไม่เกิน 2 ครั้งต่อเดือน" label="ข่าวสารจาก SOUL" onChange={(checked) => { patchLocal({ productUpdates: checked }); void persist("notifications", { productUpdates: checked }); }} />
         </SettingsSection>
 
         <SettingsSection description="ตรวจสอบอุปกรณ์ที่เข้าถึงบัญชีและออกจากระบบจากระยะไกล" icon={ShieldCheck} title="ความปลอดภัยและอุปกรณ์">

@@ -40,3 +40,12 @@
 - Durable rate-limit boundary (Tipjai-style fail-degraded) on redeem + admin login.
 - /universities campus story page; nav + sitemap + robots.
 - Version 0.7.0.
+
+## 2026-07-12 — bugfix 0.7.2
+
+Critical user-facing bugs fixed:
+1. useMemberResource infinite re-fetch (fallback in deps + inline .slice())
+2. Settings page crash: API shape nested vs UI flat (sessions/defaultPrivacy)
+3. Rewards missing tier ? blank UI; normalizeWallet defensive
+4. Tap redeem hard-coded reward-pink-sky-wallpaper ? card.primaryRewardId
+5. Status health multi-base fetch fallback

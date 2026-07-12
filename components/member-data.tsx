@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type MemoryPrivacy = "private" | "circle" | "public";
 
@@ -241,6 +241,13 @@ export function useMemberResource<T>(endpoint: string, fallback: T): ResourceSta
   const [loading, setLoading] = useState(true);
   const [source, setSource] = useState<"api" | "demo">("demo");
   const [attempt, setAttempt] = useState(0);
+  // Never put `fallback` in effect deps — callers often pass inline arrays/objects
+  // (e.g. demoMemories.slice(0, 5)) which re-created every render and caused loops.
+  const fallbackRef = useRef(fallback);
+
+  useEffect(() => {
+    fallbackRef.current = fallback;
+  }, [fallback]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -273,7 +280,7 @@ export function useMemberResource<T>(endpoint: string, fallback: T): ResourceSta
         if (error instanceof DOMException && error.name === "AbortError") return;
         await new Promise((resolve) => window.setTimeout(resolve, 260));
         if (active) {
-          setData(fallback);
+          setData(fallbackRef.current);
           setSource("demo");
         }
       } finally {
@@ -286,7 +293,7 @@ export function useMemberResource<T>(endpoint: string, fallback: T): ResourceSta
       active = false;
       controller.abort();
     };
-  }, [attempt, endpoint, fallback]);
+  }, [attempt, endpoint]);
 
   return { data, loading, source, refresh: () => setAttempt((value) => value + 1) };
 }

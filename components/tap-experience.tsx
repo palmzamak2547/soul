@@ -33,6 +33,9 @@ type CardData = {
   serial: string;
   points: number;
   badgeName: string;
+  /** First eligible reward id for prototype redeem (from API). */
+  primaryRewardId: string;
+  imageUrl: string;
 };
 
 const fallbackCard: CardData = {
@@ -44,6 +47,8 @@ const fallbackCard: CardData = {
   serial: "001 / 300",
   points: 420,
   badgeName: "Faculty Pride",
+  primaryRewardId: "reward-pink-sky-wallpaper",
+  imageUrl: "/assets/soul-card-hero.webp",
 };
 
 const memories = [
@@ -97,6 +102,11 @@ function normalizeCard(payload: unknown, token: string): CardData {
         : null;
   const rarity = typeof data.rarity === "string" ? data.rarity : null;
 
+  const visual =
+    data.visual && typeof data.visual === "object"
+      ? (data.visual as Record<string, unknown>)
+      : {};
+
   return {
     token,
     publicId: String(data.id ?? data.slug ?? data.publicId ?? fallbackCard.publicId),
@@ -127,6 +137,10 @@ function normalizeCard(payload: unknown, token: string): CardData {
         data.badgeName ??
         (rarity ? `${rarity} keep` : fallbackCard.badgeName),
     ),
+    primaryRewardId: String(
+      firstReward?.id ?? fallbackCard.primaryRewardId,
+    ),
+    imageUrl: String(visual.imageUrl ?? fallbackCard.imageUrl),
   };
 }
 
@@ -182,7 +196,12 @@ export function TapExperience({ token }: { token: string }) {
       const response = await fetch("/api/rewards/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
-        body: JSON.stringify({ cardToken: token, rewardId: "reward-pink-sky-wallpaper", idempotencyKey }),
+        // Use the card's actual eligible reward — not a hard-coded first-light id.
+        body: JSON.stringify({
+          cardToken: token,
+          rewardId: card.primaryRewardId,
+          idempotencyKey,
+        }),
       });
       if (!response.ok) throw new Error("REDEEM_FAILED");
       setRedeemState("success");
@@ -261,7 +280,7 @@ export function TapExperience({ token }: { token: string }) {
 
             {phase === "identity" && (
               <motion.div animate={{ opacity: 1, scale: 1 }} className="identity-panel" initial={{ opacity: 0, scale: 0.94 }} key="identity">
-                <div className="identity-image"><Image alt="SOUL card identity" fill priority sizes="360px" src="/assets/soul-card-hero.webp" /></div>
+                <div className="identity-image"><Image alt={`${card.displayName} SOUL card`} fill priority sizes="360px" src={card.imageUrl} /></div>
                 <div>
                   <span className="verified-label"><ShieldCheck weight="fill" /> PUBLIC DEMO PROFILE</span>
                   <p className="mini-label">IDENTITY UNLOCKED</p>

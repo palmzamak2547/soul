@@ -52,10 +52,15 @@ function WalletSkeleton() {
   );
 }
 
+const RECENT_MEMORIES_FALLBACK = demoMemories.slice(0, 5);
+
 export function MemberWallet() {
   const profile = useMemberResource<MemberProfile>("/api/member/me", demoProfile);
   const cards = useMemberResource<MemberCard[]>("/api/member/cards", demoCards);
-  const memories = useMemberResource<MemberMemory[]>("/api/member/memories?limit=5", demoMemories.slice(0, 5));
+  const memories = useMemberResource<MemberMemory[]>(
+    "/api/member/memories?limit=5",
+    RECENT_MEMORIES_FALLBACK,
+  );
   const loading = profile.loading || cards.loading || memories.loading;
 
   return (

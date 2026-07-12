@@ -30,14 +30,31 @@ import { DemoSourceBadge, MemberPageHeader } from "./member-shell";
 type RewardWallet = { balance: number; tier: string; rewards: Reward[]; redemptions: Redemption[] };
 const demoRewardWallet: RewardWallet = { balance: demoProfile.soulPoints, tier: "Pink Member", rewards: demoRewards, redemptions: demoRedemptions };
 
+function normalizeWallet(raw: RewardWallet | null | undefined): RewardWallet {
+  if (!raw || typeof raw !== "object") return demoRewardWallet;
+  return {
+    balance: Number.isFinite(raw.balance) ? raw.balance : demoRewardWallet.balance,
+    tier: typeof raw.tier === "string" && raw.tier ? raw.tier : demoRewardWallet.tier,
+    rewards: Array.isArray(raw.rewards) ? raw.rewards : demoRewardWallet.rewards,
+    redemptions: Array.isArray(raw.redemptions) ? raw.redemptions : demoRewardWallet.redemptions,
+  };
+}
+
 export function MemberRewards() {
-  const wallet = useMemberResource<RewardWallet>("/api/member/rewards", demoRewardWallet);
+  const walletResource = useMemberResource<RewardWallet>("/api/member/rewards", demoRewardWallet);
+  const walletData = normalizeWallet(walletResource.data);
   const [tab, setTab] = useState<"rewards" | "history">("rewards");
   const [selected, setSelected] = useState<Reward | null>(null);
   const [redeeming, setRedeeming] = useState(false);
   const [receipt, setReceipt] = useState<{ reward: Reward; code: string; balance: number } | null>(null);
   const [category, setCategory] = useState<"all" | Reward["category"]>("all");
-  const filtered = useMemo(() => category === "all" ? wallet.data.rewards : wallet.data.rewards.filter((reward) => reward.category === category), [category, wallet.data.rewards]);
+  const filtered = useMemo(
+    () =>
+      category === "all"
+        ? walletData.rewards
+        : walletData.rewards.filter((reward) => reward.category === category),
+    [category, walletData.rewards],
+  );
 
   async function redeem(reward: Reward) {
     setRedeeming(true);
@@ -45,12 +62,25 @@ export function MemberRewards() {
     const result = await memberMutation(
       "/api/member/rewards/redeem",
       { rewardId: reward.id, idempotencyKey },
-      { ok: true, redemptionId: `redemption_${Date.now()}`, code: `SOUL-${reward.id.slice(-3).toUpperCase()}-8842`, balance: Math.max(0, wallet.data.balance - reward.points), demo: true },
+      {
+        ok: true,
+        redemptionId: `redemption_${Date.now()}`,
+        code: `SOUL-${reward.id.slice(-3).toUpperCase()}-8842`,
+        balance: Math.max(0, walletData.balance - reward.points),
+        demo: true,
+      },
     );
     setRedeeming(false);
     setSelected(null);
-    setReceipt({ reward, code: result.data.code, balance: result.data.balance });
+    const payload = result.data as { code?: string; balance?: number };
+    setReceipt({
+      reward,
+      code: payload.code ?? `SOUL-${reward.id.slice(-3).toUpperCase()}-DEMO`,
+      balance: Number.isFinite(payload.balance) ? Number(payload.balance) : Math.max(0, walletData.balance - reward.points),
+    });
   }
+
+  const wallet = { ...walletResource, data: walletData };
 
   return (
     <div className="mx-auto w-full max-w-[1420px] px-4 py-7 sm:px-7 sm:py-10 lg:px-10 lg:py-12">
