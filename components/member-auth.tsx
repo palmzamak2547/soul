@@ -58,16 +58,18 @@ export function MemberSignIn() {
       <section className="relative flex min-h-dvh flex-col px-5 pb-9 pt-5 sm:px-10 sm:pb-12 sm:pt-8 lg:px-[clamp(44px,6vw,88px)]">
         <div className="flex items-center justify-between">
           <AuthMark />
-          <span className="rounded-full border border-[#f0ccd8] bg-[#fff2f6] px-3 py-1.5 [font-family:var(--font-mono)] text-[7px] font-bold uppercase tracking-[.12em] text-[var(--pink-strong)]">Member access</span>
+          <span className="rounded-full border border-[#f0ccd8] bg-[#fff2f6] px-3 py-1.5 [font-family:var(--font-mono)] text-[9px] font-bold uppercase tracking-[.1em] text-[var(--pink-strong)]">
+            เข้าสู่พื้นที่สมาชิก
+          </span>
         </div>
 
         <div className="my-auto w-full max-w-[520px] py-16">
           <AnimatePresence mode="wait">
             {state !== "sent" ? (
               <motion.div animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} initial={{ opacity: 0, x: -16 }} key="form">
-                <p className="mb-4 flex items-center gap-2 [font-family:var(--font-mono)] text-[8px] font-bold uppercase tracking-[.16em] text-[var(--pink-strong)]">
+                <p className="mb-4 flex items-center gap-2 [font-family:var(--font-mono)] text-[10px] font-bold uppercase tracking-[.14em] text-[var(--pink-strong)]">
                   <span className="size-1.5 rounded-full bg-[var(--pink)] shadow-[0_0_0_5px_rgba(233,30,99,.1)]" />
-                  Your memories live here
+                  ความทรงจำของคุณอยู่ที่นี่
                 </p>
                 <h1 className="m-0 [font-family:var(--font-display)] text-[clamp(42px,5.3vw,68px)] font-semibold leading-[1.02] tracking-[-.065em]">
                   กลับมาเปิด
