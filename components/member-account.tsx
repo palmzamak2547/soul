@@ -5,7 +5,6 @@ import {
   Bell,
   Check,
   CheckCircle,
-  ClockCounterClockwise,
   DownloadSimple,
   EnvelopeSimple,
   Fingerprint,

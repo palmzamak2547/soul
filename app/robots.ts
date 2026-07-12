@@ -1,7 +1,17 @@
 import type { MetadataRoute } from "next";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://soulplatform.vercel.app";
+
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", disallow: "/" },
+    rules: [
+      {
+        userAgent: "*",
+        allow: ["/", "/collections", "/privacy", "/tap/"],
+        disallow: ["/admin", "/api/", "/member", "/auth/"],
+      },
+    ],
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

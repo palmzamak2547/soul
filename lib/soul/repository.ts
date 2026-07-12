@@ -25,12 +25,34 @@ interface IdempotencyEntry {
   readonly expiresAt: number;
 }
 
+export interface PublicCatalogCard {
+  readonly id: string;
+  readonly slug: string;
+  readonly titleTh: string;
+  readonly titleEn: string;
+  readonly collection: string;
+  readonly chapter: string;
+  readonly rarity: CollectibleCardRecord["rarity"];
+  readonly status: CollectibleCardRecord["status"];
+  readonly edition: CollectibleCardRecord["edition"];
+  readonly visual: CollectibleCardRecord["visual"];
+  readonly memory: Pick<
+    CollectibleCardRecord["memory"],
+    "eyebrow" | "headline" | "year"
+  >;
+  readonly traits: readonly string[];
+  /** Demo token for the public tap experience (static prototype only). */
+  readonly demoToken: string;
+  readonly demoTapPath: string;
+}
+
 export interface SoulRepository {
   findCardByPublicToken(
     token: string,
   ): Promise<CollectibleCardRecord | null>;
   findRewardById(id: string): Promise<RewardRecord | null>;
   listRewardsForCard(card: CollectibleCardRecord): Promise<PublicReward[]>;
+  listPublicCatalog(): Promise<readonly PublicCatalogCard[]>;
   toPublicCard(card: CollectibleCardRecord): Promise<PublicCollectibleCard>;
   redeemPrototype(
     input: PrototypeRedeemInput,
@@ -65,6 +87,32 @@ export class InMemorySoulRepository implements SoulRepository {
     return rewards
       .filter((reward): reward is RewardRecord => reward !== null)
       .map(toPublicReward);
+  }
+
+  listPublicCatalog(): Promise<readonly PublicCatalogCard[]> {
+    const cards = FICTIONAL_CARDS.filter(
+      (card) => card.status === "active",
+    ).map((card) => ({
+      id: card.id,
+      slug: card.slug,
+      titleTh: card.titleTh,
+      titleEn: card.titleEn,
+      collection: card.collection,
+      chapter: card.chapter,
+      rarity: card.rarity,
+      status: card.status,
+      edition: card.edition,
+      visual: card.visual,
+      memory: {
+        eyebrow: card.memory.eyebrow,
+        headline: card.memory.headline,
+        year: card.memory.year,
+      },
+      traits: card.traits,
+      demoToken: card.publicToken,
+      demoTapPath: `/tap/${card.publicToken}`,
+    }));
+    return Promise.resolve(cards);
   }
 
   async toPublicCard(

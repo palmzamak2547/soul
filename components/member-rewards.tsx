@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Check,
   CheckCircle,
-  ClockCounterClockwise,
   Coins,
   DownloadSimple,
   Gift,

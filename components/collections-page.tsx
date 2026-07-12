@@ -12,9 +12,23 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
+
+type LiveCatalogCard = {
+  id: string;
+  slug: string;
+  titleTh: string;
+  titleEn: string;
+  collection: string;
+  chapter: string;
+  rarity: string;
+  edition: { label: string };
+  visual: { imageUrl: string; accent: string };
+  memory: { headline: string; year: string };
+  demoTapPath: string;
+};
 
 type Collection = {
   id: string;
@@ -91,10 +105,35 @@ export function CollectionsPage() {
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("all");
   const [selected, setSelected] = useState<Collection | null>(null);
   const [reserved, setReserved] = useState(false);
+  const [liveCards, setLiveCards] = useState<LiveCatalogCard[]>([]);
+  const [liveStatus, setLiveStatus] = useState<"loading" | "ready" | "error">("loading");
   const visible = useMemo(
     () => collections.filter((item) => filter === "all" || item.category === filter),
     [filter],
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await fetch("/api/cards", { headers: { accept: "application/json" } });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          data?: { cards?: LiveCatalogCard[] };
+        };
+        if (!cancelled) {
+          setLiveCards(payload.data?.cards ?? []);
+          setLiveStatus("ready");
+        }
+      } catch {
+        if (!cancelled) setLiveStatus("error");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="site-shell collections-shell">
@@ -108,6 +147,59 @@ export function CollectionsPage() {
           <p>
             แต่ละคอลเลกชันเชื่อมกับเรื่องราว community และ badge ที่ต่างกัน การ์ดทุกใบเป็นจุดเริ่มของ timeline ไม่ใช่จุดจบของของที่ระลึก
           </p>
+        </section>
+
+        <section className="collection-catalog" aria-labelledby="live-demo-title" style={{ paddingBottom: 8 }}>
+          <div className="catalog-toolbar">
+            <div>
+              <span className="mini-label">LIVE DEMO TOKENS</span>
+              <h2 id="live-demo-title">แตะการ์ดจริงจาก API</h2>
+            </div>
+            <span className="mini-label" aria-live="polite">
+              {liveStatus === "loading" && "กำลังโหลด…"}
+              {liveStatus === "ready" && `${liveCards.length} cards · /api/cards`}
+              {liveStatus === "error" && "โหลดไม่สำเร็จ — ใช้ลิงก์ demo ด้านล่าง"}
+            </span>
+          </div>
+          <div className="collection-grid">
+            {(liveStatus === "ready" ? liveCards : []).map((card) => (
+              <article className="collection-card tone-rose" key={card.id}>
+                <div className="collection-image">
+                  <Image
+                    alt={`${card.titleEn} demo card`}
+                    fill
+                    sizes="(max-width: 700px) 92vw, (max-width: 1100px) 45vw, 31vw"
+                    src={card.visual.imageUrl}
+                  />
+                  <span className="edition-chip">{card.edition.label}</span>
+                </div>
+                <div className="collection-card-body">
+                  <span className="mini-label">{card.collection}</span>
+                  <div className="collection-title-row">
+                    <h3>{card.titleTh}</h3>
+                    <strong style={{ color: card.visual.accent }}>{card.rarity}</strong>
+                  </div>
+                  <p>{card.memory.headline}</p>
+                  <ul>
+                    <li><Check size={15} weight="bold" /> {card.chapter}</li>
+                    <li><Check size={15} weight="bold" /> {card.memory.year}</li>
+                    <li><Check size={15} weight="bold" /> Demo tap token</li>
+                  </ul>
+                  <Link className="text-button" href={card.demoTapPath}>
+                    เปิด Tap Experience <ArrowRight size={17} weight="bold" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+            {liveStatus === "loading" && (
+              <p className="mini-label" style={{ gridColumn: "1 / -1" }}>กำลังดึงแคตตาล็อกจาก repository…</p>
+            )}
+            {liveStatus === "error" && (
+              <p className="mini-label" style={{ gridColumn: "1 / -1" }}>
+                ใช้ <Link href="/tap/soul_demo_7k3m9q2v">token หลัก</Link> ชั่วคราว
+              </p>
+            )}
+          </div>
         </section>
 
         <section className="collection-catalog" aria-labelledby="catalog-title">

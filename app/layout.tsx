@@ -26,7 +26,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
   ? process.env.NEXT_PUBLIC_SITE_URL
   : process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+    : "https://soulplatform.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -37,12 +37,15 @@ export const metadata: Metadata = {
   description:
     "A card you tap. A lifetime you unlock. ประสบการณ์ความทรงจำดิจิทัลสำหรับมหาวิทยาลัย",
   applicationName: "SOUL",
-  keywords: ["SOUL", "NFC collectible", "digital memory", "phygital"],
+  keywords: ["SOUL", "NFC collectible", "digital memory", "phygital", "soulplatform"],
+  alternates: { canonical: "/" },
   openGraph: {
     title: "SOUL — A lifetime you unlock",
     description: "The Digital Memory Platform for Universities.",
     type: "website",
     locale: "th_TH",
+    url: siteUrl,
+    siteName: "SOUL",
     images: [{ url: "/assets/og-soul.webp", width: 1200, height: 655 }],
   },
   twitter: {
@@ -51,7 +54,8 @@ export const metadata: Metadata = {
     description: "The Digital Memory Platform for Universities.",
     images: ["/assets/og-soul.webp"],
   },
-  robots: { index: false, follow: false },
+  // Public marketing prototype may be discovered; admin/tap remain noindex via headers.
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

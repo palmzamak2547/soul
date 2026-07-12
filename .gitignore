@@ -42,3 +42,6 @@ next-env.d.ts
 
 # typescript build cache
 tsconfig.tsbuildinfo
+.env*
+
+.vercel-prod-secrets.local.txt

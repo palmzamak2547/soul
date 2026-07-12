@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   Sparkle,
   UserCircle,
-  WarningCircle,
 } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";

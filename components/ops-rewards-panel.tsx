@@ -14,7 +14,6 @@ import { useState } from "react";
 import { runOpsMutation, type ResourceSource } from "./ops-admin-data";
 import {
   OpsPanel,
-  OpsPanelHeading,
   OpsResourceGate,
   OpsStatCard,
   OpsStatusPill,

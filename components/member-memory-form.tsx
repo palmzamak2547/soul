@@ -52,7 +52,6 @@ export function MemberMemoryForm({ mode }: MemoryFormProps) {
   const [state, setState] = useState<SaveState>("idle");
   const [draftSaved, setDraftSaved] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const changed = Boolean(title.trim() || body.trim() || filePreview);
 
   useEffect(() => {
     return () => {

@@ -17,7 +17,7 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { demoProfile } from "./member-data";
 
 const navigation = [
@@ -81,18 +81,30 @@ function MemberNav({ onNavigate }: { onNavigate?: () => void }) {
 
 export function MemberShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const isAuth = pathname === "/member/sign-in" || pathname === "/member/onboarding";
-
-  useEffect(() => {
-    setMobileOpen(false);
-    setProfileOpen(false);
-  }, [pathname]);
 
   if (isAuth) {
     return <div className="min-h-dvh bg-[var(--paper)]">{children}</div>;
   }
+
+  // Remount chrome on route change so mobile/profile menus close without
+  // synchronous setState-in-effect (react-hooks/set-state-in-effect).
+  return (
+    <MemberShellFrame key={pathname} pathname={pathname}>
+      {children}
+    </MemberShellFrame>
+  );
+}
+
+function MemberShellFrame({
+  children,
+  pathname,
+}: {
+  children: ReactNode;
+  pathname: string;
+}) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <div className="min-h-dvh bg-[#f8f4f5] text-[var(--ink)]">

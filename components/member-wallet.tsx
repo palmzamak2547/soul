@@ -16,7 +16,6 @@ import {
   Radio,
   ShieldCheck,
   Sparkle,
-  TrendUp,
   UsersThree,
 } from "@phosphor-icons/react";
 import { motion } from "motion/react";

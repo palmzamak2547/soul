@@ -17,12 +17,13 @@ export function SiteFooter() {
         <Link href="/tap/soul_demo_7k3m9q2v">Tap experience</Link>
         <Link href="/collections">Collections</Link>
         <Link href="/admin">Control Center</Link>
+        <Link href="/api/health">System status</Link>
         <Link href="/privacy">
           Privacy <ArrowUpRight size={14} aria-hidden="true" />
         </Link>
       </div>
       <div className="footer-meta">
-        <span>© 2026 SOUL Prototype</span>
+        <span>© 2026 SOUL Prototype · soulplatform.vercel.app</span>
         <span>Concept review only · University marks require permission before launch</span>
       </div>
     </footer>

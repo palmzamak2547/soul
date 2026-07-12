@@ -7,12 +7,16 @@ interface LogContext {
 }
 
 function safeContext(context: LogContext): LogContext {
-  const { email: _email, token: _token, password: _password, ...safe } =
-    context as LogContext & {
-      email?: unknown;
-      token?: unknown;
-      password?: unknown;
-    };
+  const unsafe = context as LogContext & {
+    email?: unknown;
+    token?: unknown;
+    password?: unknown;
+  };
+  // Strip sensitive fields before structured logging.
+  const { email, token, password, ...safe } = unsafe;
+  void email;
+  void token;
+  void password;
   return safe;
 }
 

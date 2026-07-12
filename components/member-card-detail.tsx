@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   ArrowRight,
   CalendarBlank,
-  CaretDown,
   CheckCircle,
   ClockCounterClockwise,
   Copy,
