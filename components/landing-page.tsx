@@ -126,6 +126,9 @@ export function LandingPage() {
               <Link className="button button-ghost" href="/collections">
                 ดูคอลเลกชัน
               </Link>
+              <Link className="button button-ghost" href="/member/wallet">
+                เปิด Member space
+              </Link>
             </motion.div>
             <motion.div
               animate={{ opacity: 1 }}

@@ -2,39 +2,33 @@
 
 ## 2026-07-12 — pass 1 (lint + catalog + ops)
 
-- Fixed ESLint: unused imports, `setState` in effect (`MemberShell` remount-on-route).
-- Added `GET /api/cards` public catalog with rate limit.
-- Extended repository with `listPublicCatalog()`.
-- Health endpoint now returns `version`, `commit`, `region`, `site`.
-- Collections page surfaces live demo tokens from API.
-- Footer + metadata point at `soulplatform.vercel.app`; marketing pages indexable.
-- Added `tests/smoke.mjs`, `tests/repository-catalog.test.mjs`, npm scripts `test:unit` / `smoke`.
-- Version bumped to `0.2.0`.
+- Fixed ESLint; `GET /api/cards`; enriched health; collections live tokens; smoke/unit tests.
+- Version `0.2.0`.
 
 ## 2026-07-12 — pass 2 (tap data + nfc + status)
 
-- Fixed TapExperience `normalizeCard` to map real `PublicCollectibleCard` API payloads (was stuck on Kasem fallback).
-- Added `lib/soul/nfc-sign.ts` (HMAC opaque URL sign/verify) for production migration path.
-- Added `/status` human-readable health page.
-- Version `0.3.0`.
+- Fixed TapExperience API mapping; `nfc-sign` helpers; `/status` page. Version `0.3.0`.
 
 ## 2026-07-12 — pass 3 (member routes)
 
-- Mounted `/member/*` App Router pages: wallet, rewards, profile, settings, sign-in, onboarding.
-- Header link + noindex headers for member space.
-- Version `0.4.0`.
+- Mounted `/member/*` shell pages. Version `0.4.0`.
+
+## 2026-07-12 — pass 4 (member deep routes)
+
+- `/member/cards/[cardId]` detail, transfer, memory create/edit. Version `0.5.0`.
+
+## 2026-07-12 — portfolio-informed pass
+
+- Surveyed Palm GitHub + local portfolio (Tipjai, Seeside, WebCUVETSMO, cuvetsmo-ai, Hanong, Athene, hubs, Codex SOUL sources).
+- Added `PORTFOLIO_LEARNINGS.md`, `AGENTS.md`, `ROADMAP.md`, `SECURITY.md`, rewritten README, collab preflight.
+- Admin `POST /api/admin/nfc/sign` + Cards panel Sign NFC URL.
+- Fourth seed card (Reunion Echo); not-found recovery; collaborator-safe git rules.
+- Version `0.6.0`.
 
 ## Next candidates (auto queue)
 
-1. Durable store (Postgres) behind `SoulRepository` using existing Supabase migration.
-2. Shared rate-limit store (KV/Redis) for multi-instance correctness.
-3. Wire signed NFC helper into admin provisioning UI.
-4. Member card detail / transfer / memory form deep routes.
-5. Playwright smoke for tap → redeem happy path.
-6. Accessibility pass on admin/ops panels (focus traps, live regions).
-
-## 2026-07-12 � pass 4 (member deep routes)
-
-- /member/cards/[cardId] detail, transfer, memory create/edit.
-- Version `0.5.0`.
-
+1. Postgres repository swap (migration exists under `supabase/migrations`).
+2. Durable rate limit (Tipjai `rate_hit` pattern).
+3. Playwright tap → redeem.
+4. Accessibility pass on ops panels.
+5. Optional custom domain under owned brands.

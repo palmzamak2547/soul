@@ -140,6 +140,41 @@ export const FICTIONAL_CARDS = [
       lastTapAt: "2026-07-10T05:54:00.000Z",
     },
   },
+  {
+    id: "card-reunion-echo-041",
+    publicToken: "soul_demo_r3u9n1on",
+    slug: "reunion-echo",
+    titleTh: "เสียงก้องรุ่น",
+    titleEn: "Reunion Echo",
+    collection: "Reunion Capsule — Prototype",
+    chapter: "Chapter 30 · Coming Home",
+    rarity: "rare",
+    status: "active",
+    edition: { number: 41, size: 200, label: "041 / 200" },
+    visual: {
+      imageUrl: "/assets/soul-card-hero.webp",
+      accent: "#E8A04A",
+      glow: "#FFE0B5",
+    },
+    memory: {
+      eyebrow: "A fictional alumni memory",
+      headline: "เมื่อรุ่นเดียวกันกลับมาเจอกันอีกครั้ง",
+      excerpt:
+        "ต้นแบบ reunion capsule ที่เก็บเสียง ภาพ และข้อความจากเพื่อนในรุ่นโดยไม่เปิดเผย PII",
+      year: "Prototype 2026",
+    },
+    traits: ["Reunion", "Alumni", "Rare Foil"],
+    rewardIds: [
+      "reward-memory-orbit-preview",
+      "reward-chamchuri-soundscape",
+    ],
+    issuedAt: "2026-07-08T09:00:00.000Z",
+    prototypeAnalytics: {
+      taps: 311,
+      rewardClaims: 74,
+      lastTapAt: "2026-07-12T10:12:00.000Z",
+    },
+  },
 ] as const satisfies readonly CollectibleCardRecord[];
 
 export const FICTIONAL_RECENT_ACTIVITY = [
@@ -166,6 +201,12 @@ export const FICTIONAL_RECENT_ACTIVITY = [
     type: "collection_publish",
     label: "เผยแพร่ Soul of Campus — Preview ในสภาพแวดล้อมต้นแบบ",
     occurredAt: "2026-07-09T12:00:00.000Z",
+  },
+  {
+    id: "activity-005",
+    type: "tap",
+    label: "Reunion Echo ถูกเปิดผ่าน demo token",
+    occurredAt: "2026-07-12T10:12:00.000Z",
   },
 ] as const satisfies readonly {
   id: string;

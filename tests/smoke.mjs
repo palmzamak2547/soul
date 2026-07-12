@@ -22,6 +22,7 @@ const paths = [
   "/api/health",
   "/api/cards",
   "/api/cards/soul_demo_7k3m9q2v",
+  "/member/cards/founder-088",
 ];
 
 let failed = 0;

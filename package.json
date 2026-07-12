@@ -1,6 +1,6 @@
 {
   "name": "soul-phygital-platform",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -12,6 +12,8 @@
     "test": "npm run lint && npm run typecheck && npm run test:unit && npm run build",
     "test:unit": "node --test tests/**/*.test.mjs",
     "smoke": "node tests/smoke.mjs",
+    "preflight": "node scripts/preflight-git.mjs",
+    "ship:check": "npm run preflight && npm run test",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern examples",
     "typecheck": "tsc --noEmit"
   },

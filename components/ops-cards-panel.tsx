@@ -94,6 +94,37 @@ function CardsWorkspace({ initialBatches, source }: { initialBatches: CardBatch[
     setToast(`เตรียม manifest ของ ${batch.id} แล้ว`);
   }
 
+  async function signDemoNfcLink() {
+    try {
+      const response = await fetch("/api/admin/nfc/sign", {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({ label: "ops-demo-link" }),
+      });
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        data?: { mode?: string; absoluteUrl?: string; previewUrl?: string; note?: string };
+        error?: { message?: string };
+      };
+      if (!response.ok || !payload.ok) {
+        setToast(payload.error?.message ?? "ลงนาม NFC ไม่สำเร็จ — ตรวจ admin session");
+        return;
+      }
+      const url = payload.data?.absoluteUrl ?? payload.data?.previewUrl ?? "";
+      if (url && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      }
+      setToast(
+        payload.data?.mode === "signed"
+          ? `Signed URL พร้อมแล้ว (คัดลอกแล้ว): ${url}`
+          : `Demo preview (ยังไม่มี NFC_SIGNING_SECRET): ${url}`,
+      );
+    } catch {
+      setToast("เครือข่ายล้มเหลวตอนเรียก NFC sign");
+    }
+  }
+
   return (
     <div className="space-y-4 lg:space-y-5">
       <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
@@ -126,7 +157,18 @@ function CardsWorkspace({ initialBatches, source }: { initialBatches: CardBatch[
 
       <OpsPanel>
         <OpsPanelHeading
-          action={<button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[var(--pink)] px-4 text-xs font-semibold text-white transition hover:bg-[var(--pink-strong)]" onClick={() => setShowForm(true)} type="button"><Plus size={16} weight="bold" /> New batch</button>}
+          action={
+            <div className="flex flex-wrap gap-2">
+              <button
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[var(--line)] px-4 text-xs font-semibold transition hover:border-[#d8b5c2]"
+                onClick={() => void signDemoNfcLink()}
+                type="button"
+              >
+                <Fingerprint size={16} /> Sign NFC URL
+              </button>
+              <button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[var(--pink)] px-4 text-xs font-semibold text-white transition hover:bg-[var(--pink-strong)]" onClick={() => setShowForm(true)} type="button"><Plus size={16} weight="bold" /> New batch</button>
+            </div>
+          }
           eyebrow="PROVISIONING QUEUE"
           title="Batch inventory"
         />
