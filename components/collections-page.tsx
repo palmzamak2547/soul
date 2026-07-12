@@ -338,27 +338,27 @@ export function CollectionsPage() {
               <button aria-label="ปิด" className="drawer-close" onClick={() => setSelected(null)} type="button"><X size={21} /></button>
               {!reserved ? (
                 <>
-                  <p className="section-kicker">PERSONALIZE / PREVIEW</p>
+                  <p className="section-kicker">ปรับแต่ง · ตัวอย่าง</p>
                   <h2 id="personalize-title">ทำให้ {selected.name}<br />เป็นของคุณ</h2>
                   <div className="drawer-preview">
                     <Image alt="ตัวอย่างการ์ดสำหรับ personalization" fill sizes="360px" src={selected.image} />
                   </div>
                   <form onSubmit={(event) => { event.preventDefault(); setReserved(true); }}>
-                    <label>ชื่อบนการ์ด<input autoComplete="off" maxLength={28} name="displayName" placeholder="เช่น PLOY K." required /></label>
+                    <label>ชื่อบนการ์ด<input autoComplete="off" maxLength={28} name="displayName" placeholder="เช่น พิมพ์ ว." required /></label>
                     <div className="form-row">
                       <label>ปีที่เข้า<input inputMode="numeric" maxLength={4} name="entryYear" placeholder="2026" required /></label>
-                      <label>Serial preference<select defaultValue="random" name="serial"><option value="random">Random</option><option value="meaningful">เลขที่มีความหมาย</option></select></label>
+                      <label>เลข serial<select defaultValue="random" name="serial"><option value="random">สุ่ม</option><option value="meaningful">เลขที่มีความหมาย</option></select></label>
                     </div>
-                    <p className="privacy-note"><LockKey size={15} /> ข้อมูลในฟอร์มนี้อยู่เฉพาะบนอุปกรณ์และยังไม่ถูกส่งไปที่ใด</p>
-                    <button className="button button-primary button-full" type="submit">สร้าง reservation ตัวอย่าง <ArrowRight size={18} /></button>
+                    <p className="privacy-note"><LockKey size={15} aria-hidden="true" /> ข้อมูลในฟอร์มนี้อยู่เฉพาะบนอุปกรณ์ ยังไม่ถูกส่งไปที่ใด</p>
+                    <button className="button button-primary button-full" type="submit">บันทึกตัวอย่าง <ArrowRight size={18} aria-hidden="true" /></button>
                   </form>
                 </>
               ) : (
                 <div className="reservation-success" aria-live="polite">
-                  <div className="success-icon"><Check size={34} weight="bold" /></div>
-                  <p className="section-kicker">DEMO RESERVATION</p>
-                  <h2>บันทึกไว้ใน prototype แล้ว</h2>
-                  <p>ยังไม่มีการชำระเงินหรือส่งข้อมูลจริง ขั้นต่อไปใน production คือ identity, payment และ fulfillment ที่ผ่าน PDPA review</p>
+                  <div className="success-icon"><Check size={34} weight="bold" aria-hidden="true" /></div>
+                  <p className="section-kicker">ตัวอย่างการจอง</p>
+                  <h2>บันทึกใน prototype แล้ว</h2>
+                  <p>ยังไม่มีการชำระเงินหรือส่งข้อมูลจริง ใน production จะมี identity, payment และ fulfillment หลังผ่าน PDPA review</p>
                   <button className="button button-primary button-full" onClick={() => setSelected(null)} type="button">กลับไปดูคอลเลกชัน</button>
                 </div>
               )}
