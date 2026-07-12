@@ -74,7 +74,7 @@ export function OpsUnauthorized() {
 
 export function OpsDemoBadge() {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-[#ecd7df] bg-[#fff7fa] px-3 py-1.5 font-[family-name:var(--font-mono)] text-[9px] tracking-[0.08em] text-[var(--pink-strong)]">
+    <span className="inline-flex items-center gap-2 rounded-full border border-[#ecd7df] bg-[#fff7fa] px-3 py-1.5 font-[family-name:var(--font-mono)] text-[12px] tracking-[0.08em] text-[var(--pink-strong)]">
       <span className="size-1.5 rounded-full bg-[var(--pink)]" aria-hidden="true" /> DEMO FALLBACK
     </span>
   );

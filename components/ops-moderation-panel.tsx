@@ -94,7 +94,7 @@ function ModerationWorkspace({ initialReviews, source }: { initialReviews: Memor
               const active = review.id === selected?.id;
               return (
                 <button aria-pressed={active} className={`w-full rounded-2xl border p-4 text-left transition ${active ? "border-[#d99db4] bg-[#fff7fa]" : "border-[var(--line)] hover:border-[#dec4ce]"}`} key={review.id} onClick={() => setSelectedId(review.id)} type="button">
-                  <span className="flex items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--blush)] text-[var(--pink-strong)]"><Icon size={20} weight="duotone" /></span><span className="min-w-0 flex-1"><span className="flex items-start justify-between gap-2"><strong className="truncate text-xs">{review.title}</strong><OpsStatusPill label={review.status} tone={review.status === "Approved" ? "success" : review.status === "Rejected" ? "danger" : review.status === "Escalated" ? "warning" : "info"} /></span><small className="mt-1 block truncate text-[9px] text-[var(--muted)]">{review.author} · {review.collection}</small><span className="mt-2 block text-[9px] text-[#9a6a7c]">{review.reason}</span></span></span>
+                  <span className="flex items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--blush)] text-[var(--pink-strong)]"><Icon size={20} weight="duotone" /></span><span className="min-w-0 flex-1"><span className="flex items-start justify-between gap-2"><strong className="truncate text-xs">{review.title}</strong><OpsStatusPill label={review.status} tone={review.status === "Approved" ? "success" : review.status === "Rejected" ? "danger" : review.status === "Escalated" ? "warning" : "info"} /></span><small className="mt-1 block truncate text-[12px] text-[var(--muted)]">{review.author} · {review.collection}</small><span className="mt-2 block text-[12px] text-[#9a6a7c]">{review.reason}</span></span></span>
                 </button>
               );
             })}
@@ -106,7 +106,7 @@ function ModerationWorkspace({ initialReviews, source }: { initialReviews: Memor
             <OpsPanelHeading eyebrow={`MEMORY REVIEW · ${selected.id}`} title={selected.title} />
             <div className="mb-5 flex flex-wrap gap-2"><OpsStatusPill label={selected.mediaType} tone="neutral" /><OpsStatusPill label={selected.privacy} tone={selected.privacy === "Public" ? "info" : "neutral"} /><OpsStatusPill label={selected.status} tone={selected.status === "Approved" ? "success" : selected.status === "Rejected" ? "danger" : selected.status === "Escalated" ? "warning" : "info"} /></div>
             <article className="rounded-2xl border border-[var(--line)] bg-[#fdfafb] p-5">
-              <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[8px] tracking-[0.1em] text-[var(--pink-strong)]"><Eye size={15} /> CONTENT PREVIEW</div>
+              <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.1em] text-[var(--pink-strong)]"><Eye size={15} /> CONTENT PREVIEW</div>
               <h3 className="mt-5 font-[family-name:var(--font-display)] text-xl font-bold tracking-[-0.03em]">{selected.title}</h3>
               <p className="mb-0 mt-3 text-sm leading-7 text-[var(--muted)]">{selected.excerpt}</p>
               <div className="mt-5 flex items-center justify-between border-t border-[var(--line)] pt-4 text-[10px] text-[#91858b]"><span>{selected.author}</span><span>{selected.submittedAt}</span></div>

@@ -134,7 +134,7 @@ function UsersWorkspace({ initialUsers, source }: { initialUsers: Operator[]; so
                   <div className="min-w-0">
                     <strong className="block truncate text-sm">{user.name}</strong>
                     <span className="block truncate text-[11px] text-[var(--muted)]">{user.email}</span>
-                    <span className="mt-1 block font-[family-name:var(--font-mono)] text-[8px] tracking-[0.05em] text-[#a0959a]">{user.organization} · {user.id}</span>
+                    <span className="mt-1 block font-[family-name:var(--font-mono)] text-[11px] tracking-[0.05em] text-[#a0959a]">{user.organization} · {user.id}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 md:block">
@@ -147,7 +147,7 @@ function UsersWorkspace({ initialUsers, source }: { initialUsers: Operator[]; so
                 </div>
                 <div>
                   <OpsStatusPill label={user.status} tone={user.status === "Active" ? "success" : user.status === "Invited" ? "info" : "danger"} />
-                  <small className="mt-1.5 block text-[9px] text-[#998d93]">{user.lastActiveAt}</small>
+                  <small className="mt-1.5 block text-[12px] text-[#998d93]">{user.lastActiveAt}</small>
                 </div>
                 <button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[var(--line)] px-3 text-[10px] font-semibold transition hover:border-[#deb9c7] hover:text-[var(--pink-strong)] disabled:opacity-50" disabled={pendingId === user.id || user.role === "Owner"} onClick={() => void toggleSuspension(user)} type="button">
                   <UserMinus size={16} /> {user.status === "Suspended" ? "คืนสิทธิ์" : "ระงับ"}

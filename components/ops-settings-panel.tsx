@@ -133,11 +133,11 @@ function SettingsWorkspace({ initialSettings, source }: { initialSettings: Organ
 
           <OpsPanel className="bg-[var(--navy)] text-white">
             <ShieldCheck className="text-[#ff7eaf]" size={27} weight="duotone" />
-            <span className="mt-6 block font-[family-name:var(--font-mono)] text-[8px] tracking-[0.12em] text-[#ff8bb8]">CHANGE CONTROL</span>
+            <span className="mt-6 block font-[family-name:var(--font-mono)] text-[11px] tracking-[0.12em] text-[#ff8bb8]">CHANGE CONTROL</span>
             <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl font-bold">Review before applying</h2>
             <p className="mt-3 text-xs leading-6 text-[#9faabb]">Security และ data-policy changes ถูกบันทึกพร้อม actor, previous value, new value และ request context</p>
             <button className="mt-5 min-h-11 w-full rounded-xl bg-[var(--pink)] text-xs font-semibold text-white disabled:opacity-60" disabled={saving} type="submit">{saving ? "กำลังบันทึก…" : "Save organization settings"}</button>
-            <small className="mt-3 block text-center text-[8px] text-[#7f8c9e]">Last updated {settings.updatedAt}</small>
+            <small className="mt-3 block text-center text-[11px] text-[#7f8c9e]">Last updated {settings.updatedAt}</small>
           </OpsPanel>
         </div>
       </form>

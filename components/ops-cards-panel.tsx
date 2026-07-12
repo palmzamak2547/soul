@@ -181,8 +181,8 @@ function CardsWorkspace({ initialBatches, source }: { initialBatches: CardBatch[
                   <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--navy)] text-[#ff79ad]"><Package size={22} weight="duotone" /></span>
                   <div className="min-w-0">
                     <strong className="block truncate text-sm">{batch.collection}</strong>
-                    <span className="mt-1 block font-[family-name:var(--font-mono)] text-[9px] tracking-[0.04em] text-[var(--muted)]">{batch.id} · {batch.chip}</span>
-                    <small className="mt-1 block text-[9px] text-[#9a8e94]">{batch.createdAt} · {batch.operator}</small>
+                    <span className="mt-1 block font-[family-name:var(--font-mono)] text-[12px] tracking-[0.04em] text-[var(--muted)]">{batch.id} · {batch.chip}</span>
+                    <small className="mt-1 block text-[12px] text-[#9a8e94]">{batch.createdAt} · {batch.operator}</small>
                   </div>
                 </div>
                 <div>
@@ -193,7 +193,7 @@ function CardsWorkspace({ initialBatches, source }: { initialBatches: CardBatch[
                 </div>
                 <div>
                   <OpsStatusPill label={batch.status} tone={batch.status === "Ready" ? "success" : batch.status === "Quality check" ? "warning" : batch.status === "Provisioning" ? "info" : "neutral"} />
-                  <span className="mt-1.5 block text-[9px] text-[#94888e]">{batch.failed ? `${batch.failed} exceptions` : "No exceptions"}</span>
+                  <span className="mt-1.5 block text-[12px] text-[var(--muted)]">{batch.failed ? `${batch.failed} exceptions` : "No exceptions"}</span>
                 </div>
                 <button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[var(--line)] px-3 text-[10px] font-semibold transition hover:border-[#d8b5c2] hover:text-[var(--pink-strong)]" onClick={() => void exportBatch(batch)} type="button"><DownloadSimple size={16} /> Manifest</button>
               </article>
@@ -204,10 +204,10 @@ function CardsWorkspace({ initialBatches, source }: { initialBatches: CardBatch[
 
       <section className="grid gap-4 md:grid-cols-2">
         <OpsPanel className="bg-[var(--navy)] text-white">
-          <div className="flex items-start gap-4"><span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/10 text-[#ff79ad]"><Fingerprint size={23} weight="duotone" /></span><div><span className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.12em] text-[#ff8bb8]">SECURE PROFILE</span><h2 className="mt-1 font-[family-name:var(--font-display)] text-lg font-bold">NTAG424 DNA default</h2><p className="mb-0 mt-2 text-xs leading-6 text-[#a6b0bf]">ทุก production batch ใช้ SUN message และ server-side AES verification พร้อมเก็บเฉพาะ key reference ในระบบ</p></div></div>
+          <div className="flex items-start gap-4"><span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/10 text-[#ff79ad]"><Fingerprint size={23} weight="duotone" /></span><div><span className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.12em] text-[#ff8bb8]">SECURE PROFILE</span><h2 className="mt-1 font-[family-name:var(--font-display)] text-lg font-bold">NTAG424 DNA default</h2><p className="mb-0 mt-2 text-xs leading-6 text-[#a6b0bf]">ทุก production batch ใช้ SUN message และ server-side AES verification พร้อมเก็บเฉพาะ key reference ในระบบ</p></div></div>
         </OpsPanel>
         <OpsPanel>
-          <div className="flex items-start gap-4"><span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--blush)] text-[var(--pink-strong)]"><Stack size={23} weight="duotone" /></span><div><span className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.12em] text-[var(--pink-strong)]">PRINT HANDOFF</span><h2 className="mt-1 font-[family-name:var(--font-display)] text-lg font-bold">Serial-to-artwork reconciliation</h2><p className="mb-0 mt-2 text-xs leading-6 text-[var(--muted)]">Manifest ทำหน้าที่จับคู่ serial, artwork revision และสถานะ QC เพื่อป้องกันการพิมพ์สลับ edition</p></div></div>
+          <div className="flex items-start gap-4"><span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--blush)] text-[var(--pink-strong)]"><Stack size={23} weight="duotone" /></span><div><span className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.12em] text-[var(--pink-strong)]">PRINT HANDOFF</span><h2 className="mt-1 font-[family-name:var(--font-display)] text-lg font-bold">Serial-to-artwork reconciliation</h2><p className="mb-0 mt-2 text-xs leading-6 text-[var(--muted)]">Manifest ทำหน้าที่จับคู่ serial, artwork revision และสถานะ QC เพื่อป้องกันการพิมพ์สลับ edition</p></div></div>
         </OpsPanel>
       </section>
       {toast && <OpsSuccessToast message={toast} onDismiss={() => setToast("")} />}

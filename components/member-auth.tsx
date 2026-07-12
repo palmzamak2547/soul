@@ -58,7 +58,7 @@ export function MemberSignIn() {
       <section className="relative flex min-h-dvh flex-col px-5 pb-9 pt-5 sm:px-10 sm:pb-12 sm:pt-8 lg:px-[clamp(44px,6vw,88px)]">
         <div className="flex items-center justify-between">
           <AuthMark />
-          <span className="rounded-full border border-[#f0ccd8] bg-[#fff2f6] px-3 py-1.5 [font-family:var(--font-mono)] text-[9px] font-bold uppercase tracking-[.1em] text-[var(--pink-strong)]">
+          <span className="rounded-full border border-[#f0ccd8] bg-[#fff2f6] px-3 py-1.5 [font-family:var(--font-mono)] text-[12px] font-bold uppercase tracking-[.1em] text-[var(--pink-strong)]">
             เข้าสู่พื้นที่สมาชิก
           </span>
         </div>
@@ -90,7 +90,7 @@ export function MemberSignIn() {
                   เข้าสู่ระบบด้วย CUNET
                 </button>
 
-                <div className="my-6 flex items-center gap-4 text-[9px] text-[#a89da2] before:h-px before:flex-1 before:bg-[var(--line)] after:h-px after:flex-1 after:bg-[var(--line)]">หรือรับลิงก์ทางอีเมล</div>
+                <div className="my-6 flex items-center gap-4 text-[12px] text-[var(--muted)] before:h-px before:flex-1 before:bg-[var(--line)] after:h-px after:flex-1 after:bg-[var(--line)]">หรือรับลิงก์ทางอีเมล</div>
 
                 <form onSubmit={submit}>
                   <label className="mb-2 block text-[10px] font-bold" htmlFor="member-email">อีเมล</label>
@@ -113,7 +113,7 @@ export function MemberSignIn() {
                   </button>
                 </form>
 
-                <p className="mb-0 mt-6 flex items-start gap-2 text-[9px] leading-5 text-[#8e8288]">
+                <p className="mb-0 mt-6 flex items-start gap-2 text-[12px] leading-5 text-[var(--muted)]">
                   <LockKey className="mt-0.5 shrink-0 text-[var(--pink)]" size={14} />
                   SOUL จะไม่ขอรหัสผ่าน CUNET และไม่แชร์ข้อมูลความทรงจำโดยไม่ได้รับอนุญาต
                 </p>
@@ -121,7 +121,7 @@ export function MemberSignIn() {
             ) : (
               <motion.div animate={{ opacity: 1, scale: 1 }} className="text-center" initial={{ opacity: 0, scale: 0.97 }} key="sent">
                 <div className="mx-auto grid size-[82px] place-items-center rounded-full bg-[#eaf9f3] text-[#138a64]"><EnvelopeSimple size={35} weight="fill" /></div>
-                <p className="mb-3 mt-7 [font-family:var(--font-mono)] text-[8px] font-bold uppercase tracking-[.15em] text-[#138a64]">Magic link sent</p>
+                <p className="mb-3 mt-7 [font-family:var(--font-mono)] text-[11px] font-bold uppercase tracking-[.15em] text-[#138a64]">Magic link sent</p>
                 <h1 className="m-0 [font-family:var(--font-display)] text-[clamp(36px,4vw,52px)] font-semibold tracking-[-.055em]">เช็กกล่องข้อความของคุณ</h1>
                 <p className="mx-auto mb-0 mt-4 max-w-[420px] text-[13px] leading-7 text-[var(--muted)]">เราส่งลิงก์ใช้ครั้งเดียวไปที่ <strong className="text-[var(--ink)]">{email}</strong> แล้ว ลิงก์จะหมดอายุใน 10 นาที</p>
                 <Link className="mt-8 inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[var(--pink)] px-5 text-[12px] font-bold text-white" href="/member/onboarding">เปิดลิงก์ตัวอย่าง <ArrowRight size={17} weight="bold" /></Link>
@@ -131,7 +131,7 @@ export function MemberSignIn() {
           </AnimatePresence>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-5 text-[8px] text-[#968a90]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-5 text-[11px] text-[var(--muted)]">
           <span>© 2026 SOUL · Digital Memory Platform</span>
           <div className="flex gap-4"><Link href="/privacy">ความเป็นส่วนตัว</Link><Link href="/">กลับเว็บไซต์หลัก</Link></div>
         </div>
@@ -147,7 +147,7 @@ export function MemberSignIn() {
         <div className="absolute bottom-[8%] left-[10%] right-[10%] rounded-[24px] border border-white/12 bg-white/[0.07] p-5 text-white backdrop-blur-xl">
           <div className="flex items-start gap-4">
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--pink)]/20 text-[#ff76a9]"><Sparkle size={21} weight="fill" /></span>
-            <div><p className="m-0 [font-family:var(--font-mono)] text-[7px] uppercase tracking-[.14em] text-[#ff76a9]">ONE CARD · A LIFETIME</p><strong className="mt-1 block [font-family:var(--font-display)] text-[20px] tracking-[-.035em]">ทุกความทรงจำ อยู่ในมือคุณ</strong><p className="mb-0 mt-2 text-[10px] leading-5 text-white/50">Public tap. Private ownership. You control what is remembered.</p></div>
+            <div><p className="m-0 [font-family:var(--font-mono)] text-[10px] uppercase tracking-[.14em] text-[#ff76a9]">ONE CARD · A LIFETIME</p><strong className="mt-1 block [font-family:var(--font-display)] text-[20px] tracking-[-.035em]">ทุกความทรงจำ อยู่ในมือคุณ</strong><p className="mb-0 mt-2 text-[10px] leading-5 text-white/80">Public tap. Private ownership. You control what is remembered.</p></div>
           </div>
         </div>
       </section>
@@ -186,12 +186,12 @@ export function MemberOnboarding() {
       <div className="pointer-events-none absolute -right-36 -top-44 size-[520px] rounded-full bg-[var(--pink)]/[0.07] blur-3xl" />
       <header className="relative flex h-[72px] items-center justify-between border-b border-[var(--line)] px-5 sm:px-10">
         <AuthMark />
-        <Link className="flex min-h-11 items-center gap-2 text-[9px] font-semibold text-[var(--muted)]" href="/member/sign-in"><ArrowLeft size={15} /> ออกจากการตั้งค่า</Link>
+        <Link className="flex min-h-11 items-center gap-2 text-[12px] font-semibold text-[var(--muted)]" href="/member/sign-in"><ArrowLeft size={15} /> ออกจากการตั้งค่า</Link>
       </header>
 
       <div className="relative mx-auto grid w-full max-w-[1180px] gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[300px_1fr] lg:py-20">
         <aside>
-          <p className="mb-3 [font-family:var(--font-mono)] text-[8px] font-bold uppercase tracking-[.15em] text-[var(--pink-strong)]">WELCOME TO SOUL</p>
+          <p className="mb-3 [font-family:var(--font-mono)] text-[11px] font-bold uppercase tracking-[.15em] text-[var(--pink-strong)]">WELCOME TO SOUL</p>
           <h1 className="m-0 [font-family:var(--font-display)] text-[clamp(36px,4vw,52px)] font-semibold leading-[1.06] tracking-[-.055em]">ทำพื้นที่นี้<br />ให้เป็นของคุณ</h1>
           <p className="mb-0 mt-5 text-[12px] leading-6 text-[var(--muted)]">ใช้เวลาไม่ถึง 2 นาที คุณเปลี่ยนการตั้งค่าเหล่านี้ได้ทุกเมื่อ</p>
           {step < 4 ? (
@@ -201,8 +201,8 @@ export function MemberOnboarding() {
                 const done = step > value;
                 const active = step === value;
                 return (
-                  <li className={`flex items-center gap-3 rounded-2xl p-2 text-[9px] font-semibold transition lg:p-3 ${active ? "bg-white text-[var(--ink)] shadow-[0_12px_35px_rgba(83,41,58,.08)]" : "text-[var(--muted)]"}`} key={label}>
-                    <span className={`grid size-8 shrink-0 place-items-center rounded-full [font-family:var(--font-mono)] text-[8px] ${done ? "bg-[#138a64] text-white" : active ? "bg-[var(--pink)] text-white" : "border border-[var(--line)] bg-white"}`}>{done ? <Check size={14} weight="bold" /> : `0${value}`}</span>
+                  <li className={`flex items-center gap-3 rounded-2xl p-2 text-[12px] font-semibold transition lg:p-3 ${active ? "bg-white text-[var(--ink)] shadow-[0_12px_35px_rgba(83,41,58,.08)]" : "text-[var(--muted)]"}`} key={label}>
+                    <span className={`grid size-8 shrink-0 place-items-center rounded-full [font-family:var(--font-mono)] text-[11px] ${done ? "bg-[#138a64] text-white" : active ? "bg-[var(--pink)] text-white" : "border border-[var(--line)] bg-white"}`}>{done ? <Check size={14} weight="bold" /> : `0${value}`}</span>
                     <span className="hidden lg:block">{label}</span>
                   </li>
                 );
@@ -221,8 +221,8 @@ export function MemberOnboarding() {
                 <label className="mb-2 mt-7 block text-[10px] font-bold" htmlFor="display-name">ชื่อที่แสดง</label>
                 <input className="min-h-[54px] w-full rounded-[16px] border border-[var(--line)] bg-[var(--paper)] px-4 text-[13px] outline-none transition focus:border-[var(--pink)] focus:bg-white focus:shadow-[0_0_0_4px_rgba(233,30,99,.07)]" id="display-name" maxLength={40} onChange={(event) => setDisplayName(event.target.value)} value={displayName} />
                 <div className="mt-5 grid gap-3 rounded-[18px] bg-[var(--cream)] p-4 sm:grid-cols-2">
-                  <div><span className="block text-[8px] text-[var(--muted)]">มหาวิทยาลัย</span><strong className="mt-1 block text-[10px]">จุฬาลงกรณ์มหาวิทยาลัย</strong></div>
-                  <div><span className="block text-[8px] text-[var(--muted)]">ยืนยันผ่าน</span><strong className="mt-1 flex items-center gap-1.5 text-[10px] text-[#138a64]"><ShieldCheck size={14} weight="fill" /> CUNET Identity</strong></div>
+                  <div><span className="block text-[11px] text-[var(--muted)]">มหาวิทยาลัย</span><strong className="mt-1 block text-[10px]">จุฬาลงกรณ์มหาวิทยาลัย</strong></div>
+                  <div><span className="block text-[11px] text-[var(--muted)]">ยืนยันผ่าน</span><strong className="mt-1 flex items-center gap-1.5 text-[10px] text-[#138a64]"><ShieldCheck size={14} weight="fill" /> CUNET Identity</strong></div>
                 </div>
                 <NextButton disabled={!displayName.trim()} onClick={() => setStep(2)} />
               </motion.div>
@@ -257,7 +257,7 @@ export function MemberOnboarding() {
                   <ConsentRow checked={consents.analytics} description="ช่วยให้เราปรับปรุงการแตะและการโหลดหน้า โดยไม่อ่านเนื้อหาความทรงจำ" label="อนุญาตข้อมูลการใช้งานแบบไม่ระบุตัวตน" onChange={(checked) => setConsents((value) => ({ ...value, analytics: checked }))} />
                   <ConsentRow checked={consents.updates} description="กิจกรรม คอลเลกชัน และรางวัลใหม่ ไม่เกิน 2 ครั้งต่อเดือน" label="รับข่าวสารจาก SOUL" onChange={(checked) => setConsents((value) => ({ ...value, updates: checked }))} />
                 </div>
-                <div className="mt-5 flex items-start gap-3 rounded-[16px] border border-[#cdebe0] bg-[#f1fbf7] p-4"><LockKey className="mt-0.5 shrink-0 text-[#138a64]" size={18} /><p className="m-0 text-[9px] leading-5 text-[#45665a]">SOUL ไม่ขายข้อมูลส่วนบุคคล คุณดาวน์โหลดหรือลบบัญชีได้จาก Settings ตามสิทธิ์ PDPA</p></div>
+                <div className="mt-5 flex items-start gap-3 rounded-[16px] border border-[#cdebe0] bg-[#f1fbf7] p-4"><LockKey className="mt-0.5 shrink-0 text-[#138a64]" size={18} /><p className="m-0 text-[12px] leading-5 text-[#45665a]">SOUL ไม่ขายข้อมูลส่วนบุคคล คุณดาวน์โหลดหรือลบบัญชีได้จาก Settings ตามสิทธิ์ PDPA</p></div>
                 <div className="mt-8 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between"><BackButton onClick={() => setStep(2)} /><button className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-full bg-[var(--pink)] px-6 text-[11px] font-bold text-white shadow-[0_10px_25px_rgba(233,30,99,.2)]" disabled={saving} onClick={() => void complete()} type="button">{saving ? <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <CheckCircle size={18} weight="fill" />}{saving ? "กำลังสร้างพื้นที่…" : "สร้างพื้นที่ของฉัน"}</button></div>
               </motion.div>
             ) : null}
@@ -265,7 +265,7 @@ export function MemberOnboarding() {
             {step === 4 ? (
               <motion.div animate={{ opacity: 1, scale: 1 }} className="rounded-[30px] border border-[var(--line)] bg-white p-8 text-center shadow-[var(--shadow-soft)] sm:p-14" initial={{ opacity: 0, scale: 0.97 }} key="complete">
                 <motion.div animate={{ rotate: [0, -8, 8, 0], scale: [1, 1.08, 1] }} className="mx-auto grid size-[88px] place-items-center rounded-full bg-[var(--navy)] text-[#ff76a9]" transition={{ duration: 0.8 }}><Sparkle size={38} weight="fill" /></motion.div>
-                <p className="mb-3 mt-7 [font-family:var(--font-mono)] text-[8px] font-bold uppercase tracking-[.16em] text-[var(--pink-strong)]">YOUR SOUL SPACE IS READY</p>
+                <p className="mb-3 mt-7 [font-family:var(--font-mono)] text-[11px] font-bold uppercase tracking-[.16em] text-[var(--pink-strong)]">YOUR SOUL SPACE IS READY</p>
                 <h2 className="m-0 [font-family:var(--font-display)] text-[clamp(34px,4vw,50px)] font-semibold tracking-[-.055em]">ยินดีต้อนรับ, {displayName}</h2>
                 <p className="mx-auto mb-0 mt-4 max-w-[470px] text-[12px] leading-7 text-[var(--muted)]">การ์ด Founder #088 พร้อมแล้ว ลองเปิดดูเรื่องราว หรือเพิ่มความทรงจำแรกของคุณได้ทันที</p>
                 <Link className="mt-8 inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[var(--pink)] px-6 text-[12px] font-bold text-white sm:w-auto" href="/member/wallet">เข้าสู่ SOUL Wallet <ArrowRight size={17} weight="bold" /></Link>
@@ -295,8 +295,8 @@ function ConsentRow({ checked, description, label, locked = false, onChange }: {
     <label className="flex cursor-pointer items-start gap-4 rounded-[18px] border border-[var(--line)] p-4 transition hover:border-[#dfbcc8]">
       <input checked={checked} className="peer sr-only" disabled={locked} onChange={(event) => onChange(event.target.checked)} type="checkbox" />
       <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg border border-[var(--line)] bg-white text-transparent peer-checked:border-[var(--pink)] peer-checked:bg-[var(--pink)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--cyan)]"><Check size={14} weight="bold" /></span>
-      <span className="min-w-0"><strong className="block text-[10px]">{label}</strong><span className="mt-1 block text-[8px] leading-4 text-[var(--muted)]">{description}</span></span>
-      {locked ? <span className="ml-auto rounded-full bg-[var(--cream)] px-2 py-1 text-[7px] text-[var(--muted)]">จำเป็น</span> : null}
+      <span className="min-w-0"><strong className="block text-[10px]">{label}</strong><span className="mt-1 block text-[11px] leading-4 text-[var(--muted)]">{description}</span></span>
+      {locked ? <span className="ml-auto rounded-full bg-[var(--cream)] px-2 py-1 text-[10px] text-[var(--muted)]">จำเป็น</span> : null}
     </label>
   );
 }

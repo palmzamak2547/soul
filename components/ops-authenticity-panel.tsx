@@ -98,8 +98,8 @@ function AuthenticityWorkspace({ initialEvents, source }: { initialEvents: Authe
               const active = selected?.id === item.id;
               return (
                 <button aria-pressed={active} className={`w-full rounded-2xl border p-4 text-left transition ${active ? "border-[#d99db4] bg-[#fff7fa]" : "border-[var(--line)] bg-white hover:border-[#ddc2cc]"}`} key={item.id} onClick={() => setSelectedId(item.id)} type="button">
-                  <span className="flex items-start justify-between gap-3"><span className="flex min-w-0 items-center gap-3"><span className={`grid size-10 shrink-0 place-items-center rounded-xl ${item.severity === "Critical" ? "bg-[#fff0f3] text-[#b2164b]" : "bg-[#fff6e9] text-[#a05c15]"}`}><WarningOctagon size={20} weight="duotone" /></span><span className="min-w-0"><strong className="block truncate text-xs">{item.cardId}</strong><small className="mt-1 block truncate text-[9px] text-[var(--muted)]">{item.collection} · {item.location}</small></span></span><OpsStatusPill label={item.severity} tone={item.severity === "Critical" ? "danger" : item.severity === "High" || item.severity === "Medium" ? "warning" : "neutral"} /></span>
-                  <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-[var(--line)] pt-3 text-[9px] text-[#8f8389]"><span className="inline-flex items-center gap-1.5"><Radio size={14} /> {item.signal}</span><span>{item.tapCount} taps</span><span>{item.occurredAt}</span></span>
+                  <span className="flex items-start justify-between gap-3"><span className="flex min-w-0 items-center gap-3"><span className={`grid size-10 shrink-0 place-items-center rounded-xl ${item.severity === "Critical" ? "bg-[#fff0f3] text-[#b2164b]" : "bg-[#fff6e9] text-[#a05c15]"}`}><WarningOctagon size={20} weight="duotone" /></span><span className="min-w-0"><strong className="block truncate text-xs">{item.cardId}</strong><small className="mt-1 block truncate text-[12px] text-[var(--muted)]">{item.collection} · {item.location}</small></span></span><OpsStatusPill label={item.severity} tone={item.severity === "Critical" ? "danger" : item.severity === "High" || item.severity === "Medium" ? "warning" : "neutral"} /></span>
+                  <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-[var(--line)] pt-3 text-[12px] text-[var(--muted)]"><span className="inline-flex items-center gap-1.5"><Radio size={14} /> {item.signal}</span><span>{item.tapCount} taps</span><span>{item.occurredAt}</span></span>
                 </button>
               );
             })}
@@ -111,7 +111,7 @@ function AuthenticityWorkspace({ initialEvents, source }: { initialEvents: Authe
             <OpsPanelHeading eyebrow="EVIDENCE REVIEW" title={selected.cardId} />
             <div className="mb-4 flex flex-wrap gap-2"><OpsStatusPill label={selected.status} tone={selected.status === "Resolved" ? "success" : selected.status === "Investigating" ? "info" : "danger"} /><OpsStatusPill label={selected.signal} tone="neutral" /></div>
             <div className="rounded-2xl bg-[var(--navy)] p-4 text-white">
-              <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[8px] tracking-[0.11em] text-[#ff8bb8]"><GlobeHemisphereWest size={15} /> TAP PATH</div>
+              <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.11em] text-[#ff8bb8]"><GlobeHemisphereWest size={15} /> TAP PATH</div>
               <strong className="mt-3 block font-[family-name:var(--font-display)] text-lg">{selected.location}</strong>
               <p className="mb-0 mt-1 text-[10px] text-[#9eabba]">Observed at {selected.occurredAt} · {selected.tapCount} requests</p>
             </div>

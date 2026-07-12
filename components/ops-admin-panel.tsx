@@ -126,6 +126,6 @@ export function OpsStatusPill({
     warning: "border-[#f0ddc3] bg-[#fff7eb] text-[#9a5a14]",
   }[tone];
 
-  return <span className={`inline-flex w-max items-center rounded-full border px-2.5 py-1 text-[9px] font-semibold ${styles}`}>{label}</span>;
+  return <span className={`inline-flex w-max items-center rounded-full border px-2.5 py-1 text-[12px] font-semibold ${styles}`}>{label}</span>;
 }
 

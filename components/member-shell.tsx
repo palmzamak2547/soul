@@ -52,7 +52,7 @@ function SoulMark({ light = false }: { light?: boolean }) {
         SOUL
       </span>
       <span className="ml-1 mt-3 size-[7px] rounded-full bg-[var(--pink)]" />
-      <span className={`ml-3 hidden border-l pl-3 [font-family:var(--font-mono)] text-[7px] uppercase tracking-[0.14em] sm:block ${light ? "border-white/20 text-white/45" : "border-[var(--line)] text-[var(--muted)]"}`}>
+      <span className={`ml-3 hidden border-l pl-3 [font-family:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] sm:block ${light ? "border-white/20 text-white/75" : "border-[var(--line)] text-[var(--muted)]"}`}>
         MEMBER
         <br />
         SPACE
@@ -63,7 +63,7 @@ function SoulMark({ light = false }: { light?: boolean }) {
 
 function DemoChip() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#efcad7] bg-[#fff1f6] px-2.5 py-1 [font-family:var(--font-mono)] text-[7px] font-bold uppercase tracking-[0.1em] text-[var(--pink-strong)]">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#efcad7] bg-[#fff1f6] px-2.5 py-1 [font-family:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--pink-strong)]">
       <span className="size-1.5 rounded-full bg-[var(--pink)]" />
       Demo member
     </span>
@@ -91,13 +91,13 @@ function MemberNav({ onNavigate }: { onNavigate?: () => void }) {
             className={`group flex min-h-12 items-center gap-3 rounded-2xl px-3.5 text-[13px] font-semibold transition ${
               active
                 ? "bg-white text-[var(--ink)] shadow-[0_10px_30px_rgba(3,8,18,.2)]"
-                : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+                : "text-white/82 hover:bg-white/[0.06] hover:text-white"
             }`}
             href={href}
             key={href}
             onClick={onNavigate}
           >
-            <Icon aria-hidden="true" className={active ? "text-[var(--pink)]" : "text-white/45 group-hover:text-white"} size={20} weight={active ? "fill" : "regular"} />
+            <Icon aria-hidden="true" className={active ? "text-[var(--pink)]" : "text-white/75 group-hover:text-white"} size={20} weight={active ? "fill" : "regular"} />
             {label}
           </Link>
         );
@@ -148,14 +148,14 @@ function MemberShellFrame({
         </Link>
         <div className="relative mt-auto rounded-[22px] border border-white/10 bg-white/[0.055] p-4">
           <div className="mb-3 flex items-center justify-between">
-            <span className="[font-family:var(--font-mono)] text-[7px] uppercase tracking-[0.14em] text-white/45">SOUL POINTS</span>
+            <span className="[font-family:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-white/75">SOUL POINTS</span>
             <Gift className="text-[#ff71a8]" size={17} />
           </div>
           <strong className="[font-family:var(--font-display)] text-2xl tracking-[-0.04em]">{demoProfile.soulPoints.toLocaleString()}</strong>
           <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
             <div className="h-full w-[62%] rounded-full bg-gradient-to-r from-[var(--pink)] to-[#ff76a9]" />
           </div>
-          <p className="mt-2 text-[9px] leading-relaxed text-white/45">อีก 260 แต้ม ปลดล็อกรางวัลระดับ Rose</p>
+          <p className="mt-2 text-[12px] leading-relaxed text-white/75">อีก 260 แต้ม ปลดล็อกรางวัลระดับ Rose</p>
         </div>
       </aside>
 
@@ -209,7 +209,7 @@ function MemberShellFrame({
               >
                 <div className="border-b border-[var(--line)] px-3 py-3">
                   <strong className="block text-[12px]">{demoProfile.displayName}</strong>
-                  <span className="text-[9px] text-[var(--muted)]">{demoProfile.email}</span>
+                  <span className="text-[12px] text-[var(--muted)]">{demoProfile.email}</span>
                 </div>
                 <Link className="mt-1 flex min-h-10 items-center gap-2 rounded-xl px-3 text-[11px] hover:bg-[var(--cream)]" href="/member/settings">
                   <SlidersHorizontal size={17} /> ตั้งค่าและความเป็นส่วนตัว
@@ -248,7 +248,7 @@ function MemberShellFrame({
               </div>
               <div className="mt-10"><MemberNav onNavigate={() => setMobileOpen(false)} /></div>
               <Link className="mt-3 flex min-h-12 items-center gap-3 rounded-2xl border border-dashed border-white/15 px-3.5 text-[12px] text-white/70" href="/tap/soul_demo_7k3m9q2v"><Radio className="text-[#ff71a8]" size={20} />แตะการ์ดใบใหม่</Link>
-              <div className="mt-auto rounded-[22px] bg-white/[0.06] p-4"><DemoChip /><p className="mb-0 mt-3 text-[10px] leading-relaxed text-white/55">พื้นที่ทดลองพร้อมข้อมูลจำลอง ไม่มีข้อมูลส่วนบุคคลจริงถูกเผยแพร่</p></div>
+              <div className="mt-auto rounded-[22px] bg-white/[0.06] p-4"><DemoChip /><p className="mb-0 mt-3 text-[10px] leading-relaxed text-white/82">พื้นที่ทดลองพร้อมข้อมูลจำลอง ไม่มีข้อมูลส่วนบุคคลจริงถูกเผยแพร่</p></div>
             </motion.aside>
           </>
         ) : null}
@@ -280,7 +280,7 @@ function MemberShellFrame({
                   ? "bg-[var(--pink)] text-white shadow-[0_8px_20px_rgba(233,30,99,.35)]"
                   : active
                     ? "bg-white text-[var(--ink)]"
-                    : "text-white/55"
+                    : "text-white/82"
               }`}
               href={href}
               key={href}
@@ -313,7 +313,7 @@ export function MemberPageHeader({
   return (
     <div className="flex flex-col gap-4 border-b border-[var(--line)] pb-6 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:pb-8">
       <div className="min-w-0">
-        <p className="mb-2.5 [font-family:var(--font-mono)] text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--pink-strong)]">{kicker}</p>
+        <p className="mb-2.5 [font-family:var(--font-mono)] text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--pink-strong)]">{kicker}</p>
         <h1 className="m-0 [font-family:var(--font-display)] text-[clamp(28px,3.6vw,42px)] font-semibold leading-[1.08] tracking-[-0.05em]">{title}</h1>
         {description ? (
           <p className="mb-0 mt-3 max-w-2xl text-[13px] leading-7 text-[var(--muted)] sm:text-[14px] sm:leading-7">
@@ -328,7 +328,7 @@ export function MemberPageHeader({
 
 export function DemoSourceBadge({ source }: { source: "api" | "demo" }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 [font-family:var(--font-mono)] text-[7px] font-bold uppercase tracking-[0.1em] ${source === "api" ? "border-[#b8ead7] bg-[#effbf6] text-[#0d7857]" : "border-[#eadce1] bg-white text-[var(--muted)]"}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 [font-family:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.1em] ${source === "api" ? "border-[#b8ead7] bg-[#effbf6] text-[#0d7857]" : "border-[#eadce1] bg-white text-[var(--muted)]"}`}>
       <span className={`size-1.5 rounded-full ${source === "api" ? "bg-[#16a675]" : "bg-[#b9aeb3]"}`} />
       {source === "api" ? "LIVE DATA" : "DEMO FALLBACK"}
     </span>

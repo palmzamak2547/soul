@@ -87,7 +87,7 @@ export function OpsAdminShell({ children }: { children: ReactNode }) {
             <ShieldCheck size={17} weight="duotone" />
           </span>
         </div>
-        <p className="mt-4 px-2 font-[family-name:var(--font-mono)] text-[9px] tracking-[0.14em] text-[#78869c]">OPERATIONS SUITE</p>
+        <p className="mt-4 px-2 font-[family-name:var(--font-mono)] text-[12px] tracking-[0.14em] text-[#c8d2df]">OPERATIONS SUITE</p>
 
         <nav aria-label="เมนูระบบปฏิบัติการ" className="mt-7 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
           {navigation.map((item) => {
@@ -100,7 +100,7 @@ export function OpsAdminShell({ children }: { children: ReactNode }) {
                 href={item.href}
                 key={item.href}
               >
-                <Icon className={active ? "text-[var(--pink)]" : "text-[#78869c]"} size={19} weight={active ? "fill" : "regular"} />
+                <Icon className={active ? "text-[var(--pink)]" : "text-[#c8d2df]"} size={19} weight={active ? "fill" : "regular"} />
                 {item.label}
                 {item.href === "/admin/notifications" && <span className="ml-auto grid size-5 place-items-center rounded-full bg-[var(--pink)] text-[10px] font-bold text-white">4</span>}
               </Link>
@@ -113,7 +113,7 @@ export function OpsAdminShell({ children }: { children: ReactNode }) {
             <House size={19} /> ภาพรวมเดิม
           </Link>
           <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 p-3.5">
-            <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[8px] tracking-[0.08em] text-[#70dfb9]">
+            <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.08em] text-[#70dfb9]">
               <span className="size-1.5 rounded-full bg-[#54dbad]" /> PLATFORM HEALTHY
             </div>
             <p className="mb-0 mt-2 text-[11px] leading-5 text-[#94a0b2]">ap-southeast-1 · policy checks active</p>
@@ -128,12 +128,12 @@ export function OpsAdminShell({ children }: { children: ReactNode }) {
               <div className="shrink-0 lg:hidden"><Brand compact /></div>
               <div className="hidden h-8 w-px bg-[var(--line)] sm:block lg:hidden" />
               <div className="min-w-0">
-                <span className="block truncate font-[family-name:var(--font-mono)] text-[8px] tracking-[0.13em] text-[var(--pink-strong)]">{meta.eyebrow}</span>
+                <span className="block truncate font-[family-name:var(--font-mono)] text-[11px] tracking-[0.13em] text-[var(--pink-strong)]">{meta.eyebrow}</span>
                 <strong className="block truncate font-[family-name:var(--font-display)] text-sm sm:text-base">{meta.title}</strong>
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <span className="hidden items-center gap-2 rounded-full border border-[#d8eee7] bg-[#f2fbf8] px-3 py-2 font-[family-name:var(--font-mono)] text-[8px] tracking-[0.06em] text-[var(--success)] md:inline-flex">
+              <span className="hidden items-center gap-2 rounded-full border border-[#d8eee7] bg-[#f2fbf8] px-3 py-2 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.06em] text-[var(--success)] md:inline-flex">
                 <span className="size-1.5 rounded-full bg-[var(--success)]" /> LIVE SYSTEM
               </span>
               <Link aria-label="เปิดการแจ้งเตือน" className="relative grid size-10 place-items-center rounded-xl border border-[var(--line)] bg-white transition hover:border-[#d9bcc7] hover:text-[var(--pink-strong)]" href="/admin/notifications">
@@ -166,7 +166,7 @@ export function OpsAdminShell({ children }: { children: ReactNode }) {
                 <IdentificationCard size={21} weight="duotone" />
               </span>
               <div>
-                <p className="m-0 font-[family-name:var(--font-mono)] text-[9px] tracking-[0.14em] text-[var(--pink-strong)]">{meta.eyebrow}</p>
+                <p className="m-0 font-[family-name:var(--font-mono)] text-[12px] tracking-[0.14em] text-[var(--pink-strong)]">{meta.eyebrow}</p>
                 <h1 className="mt-1 font-[family-name:var(--font-display)] text-[clamp(26px,3vw,40px)] font-bold tracking-[-0.045em]">{meta.title}</h1>
                 <p className="mb-0 mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">{meta.description}</p>
               </div>
