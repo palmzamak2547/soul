@@ -97,9 +97,27 @@ const collections: Collection[] = [
 const filters = [
   { id: "all", label: "ทั้งหมด" },
   { id: "founder", label: "Founder" },
-  { id: "faculty", label: "Faculty" },
-  { id: "event", label: "Event" },
+  { id: "faculty", label: "คณะ" },
+  { id: "event", label: "อีเวนต์" },
 ] as const;
+
+function CatalogSkeleton() {
+  return (
+    <div className="collection-grid" aria-hidden="true">
+      {[0, 1, 2].map((item) => (
+        <div className="collection-card collection-skeleton" key={item}>
+          <div className="collection-image skeleton-block" />
+          <div className="collection-card-body">
+            <div className="skeleton-line w-40" />
+            <div className="skeleton-line w-72" />
+            <div className="skeleton-line w-full" />
+            <div className="skeleton-line w-56" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function CollectionsPage() {
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("all");
@@ -149,64 +167,71 @@ export function CollectionsPage() {
           </p>
         </section>
 
-        <section className="collection-catalog" aria-labelledby="live-demo-title" style={{ paddingBottom: 8 }}>
+        <section className="collection-catalog collection-catalog-live" aria-labelledby="live-demo-title">
           <div className="catalog-toolbar">
             <div>
-              <span className="mini-label">LIVE DEMO TOKENS</span>
-              <h2 id="live-demo-title">แตะการ์ดจริงจาก API</h2>
+              <span className="mini-label">DEMO · แตะได้ทันที</span>
+              <h2 id="live-demo-title">การ์ดสาธิตจากระบบ</h2>
+              <p className="catalog-subcopy">เลือกใบใดก็ได้เพื่อลอง flow แตะ → ปลดล็อก → แลกรางวัล</p>
             </div>
-            <span className="mini-label" aria-live="polite">
+            <span className="catalog-status-pill" aria-live="polite">
               {liveStatus === "loading" && "กำลังโหลด…"}
-              {liveStatus === "ready" && `${liveCards.length} cards · /api/cards`}
-              {liveStatus === "error" && "โหลดไม่สำเร็จ — ใช้ลิงก์ demo ด้านล่าง"}
+              {liveStatus === "ready" && `${liveCards.length} ใบพร้อมแตะ`}
+              {liveStatus === "error" && "โหลดไม่สำเร็จ"}
             </span>
           </div>
-          <div className="collection-grid">
-            {(liveStatus === "ready" ? liveCards : []).map((card) => (
-              <article className="collection-card tone-rose" key={card.id}>
-                <div className="collection-image">
-                  <Image
-                    alt={`${card.titleEn} demo card`}
-                    fill
-                    sizes="(max-width: 700px) 92vw, (max-width: 1100px) 45vw, 31vw"
-                    src={card.visual.imageUrl}
-                  />
-                  <span className="edition-chip">{card.edition.label}</span>
-                </div>
-                <div className="collection-card-body">
-                  <span className="mini-label">{card.collection}</span>
-                  <div className="collection-title-row">
-                    <h3>{card.titleTh}</h3>
-                    <strong style={{ color: card.visual.accent }}>{card.rarity}</strong>
+          {liveStatus === "loading" ? <CatalogSkeleton /> : null}
+          {liveStatus === "error" ? (
+            <div className="catalog-empty">
+              <p>ยังดึงแคตตาล็อกไม่สำเร็จ — ใช้ลิงก์ demo หลักได้</p>
+              <Link className="button button-primary" href="/tap/soul_demo_7k3m9q2v">
+                เปิด demo card
+              </Link>
+            </div>
+          ) : null}
+          {liveStatus === "ready" ? (
+            <div className="collection-grid">
+              {liveCards.map((card) => (
+                <article className="collection-card tone-rose" key={card.id}>
+                  <div className="collection-image">
+                    <Image
+                      alt={`${card.titleEn} demo card`}
+                      fill
+                      sizes="(max-width: 700px) 92vw, (max-width: 1100px) 45vw, 31vw"
+                      src={card.visual.imageUrl}
+                    />
+                    <span className="edition-chip">{card.edition.label}</span>
+                    <span className="live-chip">TAP READY</span>
                   </div>
-                  <p>{card.memory.headline}</p>
-                  <ul>
-                    <li><Check size={15} weight="bold" /> {card.chapter}</li>
-                    <li><Check size={15} weight="bold" /> {card.memory.year}</li>
-                    <li><Check size={15} weight="bold" /> Demo tap token</li>
-                  </ul>
-                  <Link className="text-button" href={card.demoTapPath}>
-                    เปิด Tap Experience <ArrowRight size={17} weight="bold" />
-                  </Link>
-                </div>
-              </article>
-            ))}
-            {liveStatus === "loading" && (
-              <p className="mini-label" style={{ gridColumn: "1 / -1" }}>กำลังดึงแคตตาล็อกจาก repository…</p>
-            )}
-            {liveStatus === "error" && (
-              <p className="mini-label" style={{ gridColumn: "1 / -1" }}>
-                ใช้ <Link href="/tap/soul_demo_7k3m9q2v">token หลัก</Link> ชั่วคราว
-              </p>
-            )}
-          </div>
+                  <div className="collection-card-body">
+                    <span className="mini-label">{card.collection}</span>
+                    <div className="collection-title-row">
+                      <h3>{card.titleTh}</h3>
+                      <strong className="rarity-pill" style={{ color: card.visual.accent }}>
+                        {card.rarity}
+                      </strong>
+                    </div>
+                    <p>{card.memory.headline}</p>
+                    <ul>
+                      <li><Check size={15} weight="bold" aria-hidden="true" /> {card.chapter}</li>
+                      <li><Check size={15} weight="bold" aria-hidden="true" /> {card.memory.year}</li>
+                    </ul>
+                    <Link className="button button-primary collection-cta" href={card.demoTapPath}>
+                      เปิด Tap Experience <ArrowRight size={17} weight="bold" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : null}
         </section>
 
         <section className="collection-catalog" aria-labelledby="catalog-title">
-          <div className="catalog-toolbar">
+          <div className="catalog-toolbar catalog-toolbar-sticky">
             <div>
-              <span className="mini-label">LIVE CATALOG</span>
+              <span className="mini-label">SERIES CATALOG</span>
               <h2 id="catalog-title">คอลเลกชันตัวอย่าง</h2>
+              <p className="catalog-subcopy">กรองตามประเภท แล้วสำรวจ story ของแต่ละ series</p>
             </div>
             <div className="filter-group" aria-label="กรองคอลเลกชัน" role="group">
               {filters.map((item) => (
@@ -222,6 +247,14 @@ export function CollectionsPage() {
               ))}
             </div>
           </div>
+          {visible.length === 0 ? (
+            <div className="catalog-empty">
+              <p>ไม่มีคอลเลกชันในหมวดนี้</p>
+              <button className="button button-ghost" onClick={() => setFilter("all")} type="button">
+                แสดงทั้งหมด
+              </button>
+            </div>
+          ) : null}
 
           <motion.div className="collection-grid" layout>
             <AnimatePresence mode="popLayout">
@@ -257,7 +290,7 @@ export function CollectionsPage() {
                       ))}
                     </ul>
                     <button className="text-button" onClick={() => { setSelected(item); setReserved(false); }} type="button">
-                      Personalize this card <ArrowRight size={17} weight="bold" />
+                      ปรับแต่งการ์ดนี้ <ArrowRight size={17} weight="bold" aria-hidden="true" />
                     </button>
                   </div>
                 </motion.article>
@@ -266,11 +299,11 @@ export function CollectionsPage() {
           </motion.div>
         </section>
 
-        <section className="collection-assurance">
-          <div><ShieldCheck size={28} weight="duotone" /><strong>Signed tap link</strong><span>ลิงก์เฉพาะที่เดาได้ยาก</span></div>
-          <div><LockKey size={28} weight="duotone" /><strong>Private by default</strong><span>เจ้าของเลือกสิ่งที่จะแชร์</span></div>
-          <div><Radio size={28} weight="duotone" /><strong>NFC + QR</strong><span>ใช้ได้กับโทรศัพท์ทุกช่วงวัย</span></div>
-          <div><Sparkle size={28} weight="duotone" /><strong>Grows over time</strong><span>เรื่องราวใหม่เพิ่มได้เสมอ</span></div>
+        <section className="collection-assurance" aria-label="ความมั่นใจในการออกแบบ">
+          <div><ShieldCheck size={28} weight="duotone" aria-hidden="true" /><strong>ลิงก์เฉพาะ</strong><span>เดา card ID ได้ยาก</span></div>
+          <div><LockKey size={28} weight="duotone" aria-hidden="true" /><strong>ส่วนตัวเป็นค่าเริ่มต้น</strong><span>เจ้าของเลือกสิ่งที่จะแชร์</span></div>
+          <div><Radio size={28} weight="duotone" aria-hidden="true" /><strong>NFC + QR</strong><span>ใช้ได้กับมือถือทั่วไป</span></div>
+          <div><Sparkle size={28} weight="duotone" aria-hidden="true" /><strong>เติบโตตามเวลา</strong><span>เรื่องราวใหม่เพิ่มได้เสมอ</span></div>
         </section>
 
         <section className="collection-cta">

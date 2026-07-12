@@ -329,19 +329,24 @@ export function TapExperience({ token }: { token: string }) {
           <motion.div animate={{ opacity: 1, y: 0 }} className="memory-dashboard" initial={{ opacity: 0, y: 36 }}>
             <section className="profile-snapshot">
               <div className="profile-main">
-                <span className="mini-label">YOUR SOUL / PUBLIC DEMO</span>
+                <span className="mini-label">โปรไฟล์สาธารณะ · สาธิต</span>
                 <h2>{card.displayName}</h2>
                 <p>{card.faculty} · {card.cohort}</p>
               </div>
-              <div className="profile-stat"><Coins size={22} weight="duotone" /><strong>{card.points}</strong><span>SOUL points</span></div>
-              <div className="profile-stat"><Trophy size={22} weight="duotone" /><strong>3 / 6</strong><span>Badges earned</span></div>
-              <div className="profile-stat"><ClockCounterClockwise size={22} weight="duotone" /><strong>4</strong><span>Memories</span></div>
+              <div className="profile-stat"><Coins size={22} weight="duotone" aria-hidden="true" /><strong>{card.points}</strong><span>แต้ม SOUL</span></div>
+              <div className="profile-stat"><Trophy size={22} weight="duotone" aria-hidden="true" /><strong>3 / 6</strong><span>เหรียญที่ปลดล็อก</span></div>
+              <div className="profile-stat"><ClockCounterClockwise size={22} weight="duotone" aria-hidden="true" /><strong>4</strong><span>ความทรงจำ</span></div>
             </section>
 
             <section className="memory-feed" aria-labelledby="memory-feed-title">
               <div className="feed-heading">
-                <div><span className="mini-label">MEMORY TIMELINE</span><h2 id="memory-feed-title">เรื่องราวที่เติบโตไปกับคุณ</h2></div>
-                <button className="privacy-control" type="button"><LockKey size={16} /> Privacy: owner controlled</button>
+                <div>
+                  <span className="mini-label">เส้นเวลาความทรงจำ</span>
+                  <h2 id="memory-feed-title">เรื่องราวที่เติบโตไปกับคุณ</h2>
+                </div>
+                <button className="privacy-control" type="button">
+                  <LockKey size={16} aria-hidden="true" /> เจ้าของควบคุมการแชร์
+                </button>
               </div>
               <div className="feed-list">
                 {memories.map((memory, index) => (
@@ -353,38 +358,57 @@ export function TapExperience({ token }: { token: string }) {
                     viewport={{ once: true }}
                     whileInView={{ opacity: 1, x: 0 }}
                   >
-                    <div className="feed-marker">{memory.state === "locked" ? <LockKey size={18} /> : <Sparkle size={18} weight="fill" />}</div>
+                    <div className="feed-marker" aria-hidden="true">
+                      {memory.state === "locked" ? <LockKey size={18} /> : <Sparkle size={18} weight="fill" />}
+                    </div>
                     <span className="feed-date">{memory.date}</span>
-                    <div><span className="feed-type">{memory.type}</span><h3>{memory.title}</h3><p>{memory.copy}</p></div>
-                    <button aria-label={`เปิด ${memory.title}`} disabled={memory.state === "locked"} type="button"><ArrowRight size={18} /></button>
+                    <div>
+                      <span className="feed-type">{memory.type}</span>
+                      <h3>{memory.title}</h3>
+                      <p>{memory.copy}</p>
+                    </div>
+                    <button
+                      aria-label={memory.state === "locked" ? `${memory.title} ยังล็อกอยู่` : `เปิด ${memory.title}`}
+                      className="feed-open"
+                      disabled={memory.state === "locked"}
+                      type="button"
+                    >
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </button>
                   </motion.article>
                 ))}
               </div>
             </section>
 
             <section className="reward-panel">
-              <div className="reward-art"><Gift size={38} weight="duotone" /><span>300 PTS</span></div>
+              <div className="reward-art" aria-hidden="true"><Gift size={38} weight="duotone" /><span>DEMO</span></div>
               <div>
-                <span className="mini-label">NEXT REWARD</span>
-                <h2>Pink Memento Pin</h2>
-                <p>ของที่ระลึก physical รุ่นทดลอง ใช้ 300 SOUL points</p>
+                <span className="mini-label">รางวัลถัดไป</span>
+                <h2>{card.badgeName}</h2>
+                <p>ทดลองแลกรางวัลจากแต้มของ session นี้ — ไม่ใช่ entitlement จริง</p>
               </div>
               <div className="reward-action">
                 {redeemState === "success" ? (
-                  <span className="redeem-success"><CheckCircle size={20} weight="fill" /> Redeemed in demo</span>
+                  <span className="redeem-success"><CheckCircle size={20} weight="fill" aria-hidden="true" /> แลกในโหมดสาธิตแล้ว</span>
                 ) : (
                   <button className="button button-primary" disabled={redeemState === "loading"} onClick={redeemReward} type="button">
                     {redeemState === "loading" ? "กำลังตรวจสอบ…" : "ทดลองแลกรางวัล"}
                   </button>
                 )}
-                {redeemState === "error" && <span className="form-error">ยังแลกไม่ได้ กรุณาลองอีกครั้ง</span>}
-                <small>Prototype only · tap session ไม่ใช่หลักฐาน ownership</small>
+                {redeemState === "error" ? <span className="form-error" role="alert">ยังแลกไม่ได้ กรุณาลองอีกครั้ง</span> : null}
+                <small>ต้นแบบเท่านั้น · การแตะไม่ใช่หลักฐานความเป็นเจ้าของ</small>
               </div>
             </section>
 
             <section className="tap-security-note">
-              <ShieldCheck size={24} weight="duotone" />
-              <div><strong>Designed with honest security boundaries</strong><p>Signed link ช่วยป้องกันการเดา card ID แต่การ claim, ความทรงจำส่วนตัว และการแลกรางวัลจริงต้องยืนยันเจ้าของแยกต่างหาก</p></div>
+              <ShieldCheck size={24} weight="duotone" aria-hidden="true" />
+              <div>
+                <strong>ขอบเขตความปลอดภัยที่พูดตรง</strong>
+                <p>
+                  ลิงก์ช่วยลดการเดา card ID แต่ ownership, ความทรงจำส่วนตัว และการแลกรางวัลจริง
+                  ต้องยืนยันเจ้าของแยกต่างหาก
+                </p>
+              </div>
             </section>
           </motion.div>
         )}

@@ -1042,21 +1042,80 @@ blockquote em {
 
 .collection-catalog {
   background: var(--cream);
-  padding: 58px clamp(22px, 5vw, 78px) clamp(90px, 9vw, 140px);
+  padding: 58px clamp(22px, 5vw, 78px) clamp(72px, 8vw, 120px);
+}
+
+.collection-catalog-live {
+  background: linear-gradient(180deg, #fff7fa 0%, var(--cream) 100%);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
 }
 
 .catalog-toolbar {
   align-items: end;
   display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
   justify-content: space-between;
-  margin: 0 auto 38px;
+  margin: 0 auto 28px;
   max-width: 1380px;
+}
+
+.catalog-toolbar-sticky {
+  background: color-mix(in srgb, var(--cream) 88%, white);
+  border-radius: 18px;
+  margin-bottom: 28px;
+  padding: 14px 16px;
+  position: sticky;
+  top: 78px;
+  z-index: 20;
+  backdrop-filter: blur(12px);
 }
 
 .catalog-toolbar h2 {
   font-family: var(--font-display), var(--font-body), sans-serif;
-  font-size: 31px;
+  font-size: clamp(26px, 3vw, 32px);
   letter-spacing: -0.04em;
+  margin: 6px 0 0;
+}
+
+.catalog-subcopy {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 8px 0 0;
+  max-width: 42ch;
+}
+
+.catalog-status-pill {
+  align-self: center;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  min-height: 36px;
+  padding: 8px 14px;
+  text-transform: uppercase;
+}
+
+.catalog-empty {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1380px;
+  min-height: 180px;
+  text-align: center;
+}
+
+.catalog-empty p {
+  color: var(--muted);
+  font-size: 14px;
   margin: 0;
 }
 
@@ -1065,7 +1124,9 @@ blockquote em {
   border: 1px solid var(--line);
   border-radius: 999px;
   display: flex;
+  gap: 2px;
   padding: 4px;
+  scrollbar-width: none;
 }
 
 .filter-group button {
@@ -1073,14 +1134,72 @@ blockquote em {
   border: 0;
   border-radius: 999px;
   color: var(--muted);
-  font-size: 12px;
-  min-height: 40px;
-  padding: 0 17px;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 42px;
+  padding: 0 16px;
+  white-space: nowrap;
 }
 
 .filter-group button.is-active {
   background: var(--ink);
   color: white;
+}
+
+.collection-cta {
+  margin-top: 8px;
+  min-height: 46px;
+  width: 100%;
+}
+
+.live-chip {
+  background: var(--pink);
+  border-radius: 999px;
+  bottom: 14px;
+  color: white;
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 7px 10px;
+  position: absolute;
+  right: 14px;
+}
+
+.rarity-pill {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.collection-skeleton .skeleton-block,
+.skeleton-line {
+  animation: skeleton-pulse 1.2s ease-in-out infinite;
+  background: linear-gradient(90deg, #efe7ea, #f7f1f3, #efe7ea);
+  background-size: 200% 100%;
+  border-radius: 10px;
+}
+
+.collection-skeleton .skeleton-block {
+  aspect-ratio: 1.65;
+  width: 100%;
+}
+
+.skeleton-line {
+  height: 12px;
+  margin-top: 12px;
+}
+
+.skeleton-line.w-40 { width: 40%; }
+.skeleton-line.w-56 { width: 56%; }
+.skeleton-line.w-72 { width: 72%; }
+.skeleton-line.w-full { width: 100%; }
+
+@keyframes skeleton-pulse {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 .collection-grid {
@@ -1858,12 +1977,32 @@ blockquote em {
 
 .profile-stat strong {
   font-family: var(--font-display), sans-serif;
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .profile-stat span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.feed-open {
+  align-items: center;
+  background: var(--blush);
+  border: 0;
+  border-radius: 999px;
+  color: var(--pink-strong);
+  display: grid;
+  height: 44px;
+  justify-content: center;
+  min-width: 44px;
+  width: 44px;
+}
+
+.feed-open:disabled {
+  background: #f0eaec;
+  color: #b0a5aa;
 }
 
 .memory-feed,

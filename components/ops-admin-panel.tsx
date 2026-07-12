@@ -66,9 +66,9 @@ export function OpsStatCard({
   return (
     <article className="min-w-0 rounded-[18px] border border-[var(--line)] bg-white p-4 shadow-[var(--shadow-card)] sm:p-5">
       <div className={`grid size-10 place-items-center rounded-xl ${accentClass}`}>{icon}</div>
-      <p className="mb-0 mt-5 text-xs font-medium text-[var(--muted)]">{label}</p>
+      <p className="mb-0 mt-5 text-[13px] font-medium text-[var(--muted)]">{label}</p>
       <strong className="mt-1 block font-[family-name:var(--font-display)] text-2xl tracking-[-0.04em] sm:text-[28px]">{value}</strong>
-      <small className="mt-2 block text-[10px] leading-4 text-[#91858b]">{note}</small>
+      <small className="mt-2 block text-[12px] leading-5 text-[#7a6f75]">{note}</small>
     </article>
   );
 }
@@ -88,11 +88,15 @@ export function OpsPanelHeading({
 }) {
   return (
     <div className="mb-5 flex flex-col gap-3 border-b border-[var(--line)] pb-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <span className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.13em] text-[var(--pink-strong)]">{eyebrow}</span>
-        <h2 className="mt-1 font-[family-name:var(--font-display)] text-lg font-bold tracking-[-0.025em]">{title}</h2>
+      <div className="min-w-0">
+        <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold tracking-[0.12em] text-[var(--pink-strong)]">
+          {eyebrow}
+        </span>
+        <h2 className="mt-1.5 font-[family-name:var(--font-display)] text-xl font-bold tracking-[-0.03em] sm:text-[22px]">
+          {title}
+        </h2>
       </div>
-      {action}
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }
