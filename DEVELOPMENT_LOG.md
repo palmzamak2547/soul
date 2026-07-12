@@ -18,11 +18,17 @@
 - Added `/status` human-readable health page.
 - Version `0.3.0`.
 
+## 2026-07-12 — pass 3 (member routes)
+
+- Mounted `/member/*` App Router pages: wallet, rewards, profile, settings, sign-in, onboarding.
+- Header link + noindex headers for member space.
+- Version `0.4.0`.
+
 ## Next candidates (auto queue)
 
 1. Durable store (Postgres) behind `SoulRepository` using existing Supabase migration.
 2. Shared rate-limit store (KV/Redis) for multi-instance correctness.
 3. Wire signed NFC helper into admin provisioning UI.
-4. Mount real member App Router pages from existing components.
+4. Member card detail / transfer / memory form deep routes.
 5. Playwright smoke for tap → redeem happy path.
 6. Accessibility pass on admin/ops panels (focus traps, live regions).
