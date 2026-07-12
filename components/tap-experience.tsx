@@ -57,20 +57,76 @@ const sleep = (duration: number) => new Promise((resolve) => window.setTimeout(r
 
 function normalizeCard(payload: unknown, token: string): CardData {
   if (!payload || typeof payload !== "object") return { ...fallbackCard, token };
-  const root = "data" in payload && payload.data && typeof payload.data === "object" ? payload.data : payload;
-  const envelope = root as Record<string, unknown>;
-  const data = envelope.card && typeof envelope.card === "object" ? envelope.card as Record<string, unknown> : envelope;
-  const profile = data.profile && typeof data.profile === "object" ? data.profile as Record<string, unknown> : {};
-  const edition = data.edition && typeof data.edition === "object" ? data.edition as Record<string, unknown> : {};
+  const root =
+    "data" in payload && payload.data && typeof payload.data === "object"
+      ? (payload.data as Record<string, unknown>)
+      : (payload as Record<string, unknown>);
+  // API shape: { status, card: PublicCollectibleCard, nfc }
+  const data =
+    root.card && typeof root.card === "object"
+      ? (root.card as Record<string, unknown>)
+      : root;
+  const profile =
+    data.profile && typeof data.profile === "object"
+      ? (data.profile as Record<string, unknown>)
+      : {};
+  const edition =
+    data.edition && typeof data.edition === "object"
+      ? (data.edition as Record<string, unknown>)
+      : {};
+  const memory =
+    data.memory && typeof data.memory === "object"
+      ? (data.memory as Record<string, unknown>)
+      : {};
+  const rewards = Array.isArray(data.rewards) ? data.rewards : [];
+  const firstReward =
+    rewards[0] && typeof rewards[0] === "object"
+      ? (rewards[0] as Record<string, unknown>)
+      : null;
+
+  const titleTh = typeof data.titleTh === "string" ? data.titleTh : null;
+  const titleEn = typeof data.titleEn === "string" ? data.titleEn : null;
+  const collection =
+    typeof data.collection === "string" ? data.collection : null;
+  const chapter = typeof data.chapter === "string" ? data.chapter : null;
+  const editionLabel =
+    typeof edition.label === "string"
+      ? edition.label
+      : typeof data.serial === "string"
+        ? data.serial
+        : null;
+  const rarity = typeof data.rarity === "string" ? data.rarity : null;
+
   return {
     token,
-    publicId: String(data.publicId ?? fallbackCard.publicId),
-    displayName: String(profile.displayName ?? data.displayName ?? fallbackCard.displayName),
-    faculty: String(profile.faculty ?? data.faculty ?? fallbackCard.faculty),
-    cohort: String(profile.cohort ?? data.cohort ?? fallbackCard.cohort),
-    serial: String(edition.serial ?? data.serial ?? fallbackCard.serial),
-    points: Number(data.points ?? profile.points ?? fallbackCard.points),
-    badgeName: String(data.badgeName ?? fallbackCard.badgeName),
+    publicId: String(data.id ?? data.slug ?? data.publicId ?? fallbackCard.publicId),
+    displayName: String(
+      titleEn ??
+        profile.displayName ??
+        data.displayName ??
+        titleTh ??
+        fallbackCard.displayName,
+    ),
+    faculty: String(
+      collection ?? profile.faculty ?? data.faculty ?? fallbackCard.faculty,
+    ),
+    cohort: String(
+      chapter ??
+        memory.year ??
+        profile.cohort ??
+        data.cohort ??
+        fallbackCard.cohort,
+    ),
+    serial: String(editionLabel ?? fallbackCard.serial),
+    points: Number(
+      data.points ?? profile.points ?? (rarity === "signature" ? 520 : 420),
+    ),
+    badgeName: String(
+      firstReward?.titleEn ??
+        firstReward?.titleTh ??
+        data.badgeName ??
+        (rarity ? `${rarity} keep` : fallbackCard.badgeName),
+    ),
   };
 }
 

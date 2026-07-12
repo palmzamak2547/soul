@@ -11,11 +11,18 @@
 - Added `tests/smoke.mjs`, `tests/repository-catalog.test.mjs`, npm scripts `test:unit` / `smoke`.
 - Version bumped to `0.2.0`.
 
+## 2026-07-12 — pass 2 (tap data + nfc + status)
+
+- Fixed TapExperience `normalizeCard` to map real `PublicCollectibleCard` API payloads (was stuck on Kasem fallback).
+- Added `lib/soul/nfc-sign.ts` (HMAC opaque URL sign/verify) for production migration path.
+- Added `/status` human-readable health page.
+- Version `0.3.0`.
+
 ## Next candidates (auto queue)
 
 1. Durable store (Postgres) behind `SoulRepository` using existing Supabase migration.
 2. Shared rate-limit store (KV/Redis) for multi-instance correctness.
-3. Signed NFC URL helper (`lib/soul/nfc-sign.ts`) + admin provision UI wiring.
-4. Member routes as real App Router pages if not fully mounted.
+3. Wire signed NFC helper into admin provisioning UI.
+4. Mount real member App Router pages from existing components.
 5. Playwright smoke for tap → redeem happy path.
 6. Accessibility pass on admin/ops panels (focus traps, live regions).
