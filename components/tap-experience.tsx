@@ -305,15 +305,9 @@ export function TapExperience({ token }: { token: string }) {
               </motion.div>
             )}
 
-            {phase === "unlocked" && (
-              <motion.div animate={{ opacity: 1 }} className="unlock-complete" initial={{ opacity: 0 }} key="unlocked">
-                <Check size={28} weight="bold" />
-                <span>MEMORY UNLOCKED</span>
-              </motion.div>
-            )}
           </AnimatePresence>
 
-          {phase !== "ready" && phase !== "unlocked" && (
+          {phase !== "ready" && (
             <button className="skip-sequence" onClick={() => { running.current = false; setPhase("unlocked"); setLiveMessage("ข้าม animation และเปิด memory timeline แล้ว"); }} type="button">
               ข้าม animation
             </button>
