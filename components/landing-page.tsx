@@ -64,10 +64,11 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 28 }}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 40, rotateX: 15, scale: 0.95 }}
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: true, amount: 0.2 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+      style={{ transformPerspective: 1200, transformStyle: "preserve-3d" }}
     >
       {children}
     </motion.div>
@@ -152,11 +153,12 @@ export function LandingPage() {
 
           <motion.div className="hero-visual" style={{ y: imageY }}>
             <motion.div
-              className="hero-image-frame"
-              initial={{ opacity: 0, scale: 0.96, rotate: 1.5 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ rotateY: -2.5, rotateX: 1.5, scale: 1.012 }}
+              className="hero-image-frame antigravity-shadow glass-panel"
+              initial={{ opacity: 0, scale: 0.92, rotateX: 20, y: 30 }}
+              animate={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ rotateY: -8, rotateX: 8, scale: 1.03 }}
+              style={{ transformPerspective: 1200 }}
             >
               <Image
                 alt="การ์ดสะสม SOUL สี rose-gold บนแท่นใส"
@@ -167,15 +169,23 @@ export function LandingPage() {
               />
               <div className="image-sheen" aria-hidden="true" />
             </motion.div>
-            <div className="floating-note note-top">
+            <motion.div 
+              className="floating-note note-top glass-panel"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            >
               <span className="pulse-dot" />
               NFC READY
               <strong>Tap to remember</strong>
-            </div>
-            <div className="floating-note note-bottom">
+            </motion.div>
+            <motion.div 
+              className="floating-note note-bottom glass-panel"
+              animate={{ y: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
+            >
               <span>LIMITED EDITION</span>
               <strong>088 / 500</strong>
-            </div>
+            </motion.div>
           </motion.div>
         </section>
 
@@ -242,8 +252,12 @@ export function LandingPage() {
             </Reveal>
           </div>
 
-          <div className="memory-timeline">
-            <div className="timeline-line" aria-hidden="true" />
+          <div className="memory-timeline perspective-container">
+            <motion.div 
+              className="timeline-line" 
+              aria-hidden="true" 
+              style={{ scaleY: useTransform(scrollYProgress, [0, 1], [0.8, 1.2]) }}
+            />
             {timeline.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -266,18 +280,23 @@ export function LandingPage() {
               <h2>The card is the door.<br /><em>The platform is the building.</em></h2>
             </Reveal>
           </div>
-          <div className="pillar-grid">
+          <div className="pillar-grid perspective-container">
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
               return (
-                <Reveal className="pillar-card" delay={index * 0.08} key={pillar.eyebrow}>
-                  <div className="pillar-top">
-                    <span>{pillar.eyebrow}</span>
-                    <Icon size={28} weight="duotone" aria-hidden="true" />
-                  </div>
-                  <h3>{pillar.title}</h3>
-                  <p>{pillar.copy}</p>
-                  <span className="pillar-index">0{index + 1}</span>
+                <Reveal className="pillar-card isometric-card glass-panel antigravity-shadow" delay={index * 0.12} key={pillar.eyebrow}>
+                  <motion.div 
+                    whileHover={{ rotateX: 15, rotateY: -15, scale: 1.02, z: 20 }}
+                    style={{ transformStyle: "preserve-3d", height: "100%" }}
+                  >
+                    <div className="pillar-top" style={{ transform: "translateZ(30px)" }}>
+                      <span>{pillar.eyebrow}</span>
+                      <Icon size={28} weight="duotone" aria-hidden="true" />
+                    </div>
+                    <h3 style={{ transform: "translateZ(40px)" }}>{pillar.title}</h3>
+                    <p style={{ transform: "translateZ(20px)" }}>{pillar.copy}</p>
+                    <span className="pillar-index" style={{ transform: "translateZ(10px)" }}>0{index + 1}</span>
+                  </motion.div>
                 </Reveal>
               );
             })}
@@ -294,17 +313,23 @@ export function LandingPage() {
               มหาวิทยาลัยเก็บองค์ความรู้ไว้เสมอ ถึงเวลาที่เราจะเก็บความรู้สึกของการได้เป็นส่วนหนึ่งไว้ด้วย
             </p>
           </Reveal>
-          <Reveal className="manifesto-card" delay={0.1}>
-            <Image
-              alt="SOUL digital badge สีชมพูสำหรับคณะนิเทศศาสตร์"
-              fill
-              sizes="(max-width: 900px) 90vw, 38vw"
-              src="/assets/communication-arts-badge.webp"
-            />
-            <div className="manifesto-card-overlay">
-              <span>BADGE UNLOCKED</span>
-              <strong>Faculty pride</strong>
-            </div>
+          <Reveal className="manifesto-card isometric-card antigravity-shadow" delay={0.1}>
+            <motion.div
+              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }}
+              style={{ transformStyle: "preserve-3d", height: "100%", width: "100%" }}
+            >
+              <Image
+                alt="SOUL digital badge สีชมพูสำหรับคณะนิเทศศาสตร์"
+                fill
+                sizes="(max-width: 900px) 90vw, 38vw"
+                src="/assets/communication-arts-badge.webp"
+                style={{ borderRadius: "inherit" }}
+              />
+              <div className="manifesto-card-overlay glass-panel" style={{ transform: "translateZ(40px)" }}>
+                <span>BADGE UNLOCKED</span>
+                <strong>Faculty pride</strong>
+              </div>
+            </motion.div>
           </Reveal>
         </section>
 

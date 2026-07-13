@@ -33,7 +33,6 @@ type CardData = {
   serial: string;
   points: number;
   badgeName: string;
-  /** First eligible reward id for prototype redeem (from API). */
   primaryRewardId: string;
   imageUrl: string;
 };
@@ -66,7 +65,6 @@ function normalizeCard(payload: unknown, token: string): CardData {
     "data" in payload && payload.data && typeof payload.data === "object"
       ? (payload.data as Record<string, unknown>)
       : (payload as Record<string, unknown>);
-  // API shape: { status, card: PublicCollectibleCard, nfc }
   const data =
     root.card && typeof root.card === "object"
       ? (root.card as Record<string, unknown>)
@@ -196,7 +194,6 @@ export function TapExperience({ token }: { token: string }) {
       const response = await fetch("/api/rewards/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
-        // Use the card's actual eligible reward — not a hard-coded first-light id.
         body: JSON.stringify({
           cardToken: token,
           rewardId: card.primaryRewardId,
@@ -241,7 +238,8 @@ export function TapExperience({ token }: { token: string }) {
         <Link href="/"><ArrowLeft size={17} /> กลับหน้าหลัก</Link>
       </header>
       <main id="main-content">
-        <section className={`unlock-stage phase-${phase}`}>
+        {phase !== "unlocked" && (
+          <section className={`unlock-stage phase-${phase}`}>
           <div className="unlock-atmosphere" aria-hidden="true" />
           <div className="unlock-status" aria-live="polite">{liveMessage}</div>
           <AnimatePresence mode="wait">
@@ -324,95 +322,174 @@ export function TapExperience({ token }: { token: string }) {
             {[1, 2, 3, 4].map((item) => <span className={phaseIndex >= item ? "is-active" : ""} key={item} />)}
           </div>
         </section>
+        )}
 
         {phase === "unlocked" && (
-          <motion.div animate={{ opacity: 1, y: 0 }} className="memory-dashboard" initial={{ opacity: 0, y: 36 }}>
-            <section className="profile-snapshot">
-              <div className="profile-main">
-                <span className="mini-label">โปรไฟล์สาธารณะ · สาธิต</span>
-                <h2>{card.displayName}</h2>
-                <p>{card.faculty} · {card.cohort}</p>
-              </div>
-              <div className="profile-stat"><Coins size={22} weight="duotone" aria-hidden="true" /><strong>{card.points}</strong><span>แต้ม SOUL</span></div>
-              <div className="profile-stat"><Trophy size={22} weight="duotone" aria-hidden="true" /><strong>3 / 6</strong><span>เหรียญที่ปลดล็อก</span></div>
-              <div className="profile-stat"><ClockCounterClockwise size={22} weight="duotone" aria-hidden="true" /><strong>4</strong><span>ความทรงจำ</span></div>
-            </section>
-
-            <section className="memory-feed" aria-labelledby="memory-feed-title">
-              <div className="feed-heading">
-                <div>
-                  <span className="mini-label">เส้นเวลาความทรงจำ</span>
-                  <h2 id="memory-feed-title">เรื่องราวที่เติบโตไปกับคุณ</h2>
-                </div>
-                <button className="privacy-control" type="button">
-                  <LockKey size={16} aria-hidden="true" /> เจ้าของควบคุมการแชร์
-                </button>
-              </div>
-              <div className="feed-list">
-                {memories.map((memory, index) => (
-                  <motion.article
-                    className={`feed-item ${memory.state === "locked" ? "is-locked" : ""}`}
-                    initial={{ opacity: 0, x: -18 }}
-                    key={memory.title}
-                    transition={{ delay: index * 0.08 }}
-                    viewport={{ once: true }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                  >
-                    <div className="feed-marker" aria-hidden="true">
-                      {memory.state === "locked" ? <LockKey size={18} /> : <Sparkle size={18} weight="fill" />}
-                    </div>
-                    <span className="feed-date">{memory.date}</span>
-                    <div>
-                      <span className="feed-type">{memory.type}</span>
-                      <h3>{memory.title}</h3>
-                      <p>{memory.copy}</p>
-                    </div>
-                    <button
-                      aria-label={memory.state === "locked" ? `${memory.title} ยังล็อกอยู่` : `เปิด ${memory.title}`}
-                      className="feed-open"
-                      disabled={memory.state === "locked"}
-                      type="button"
-                    >
-                      <ArrowRight size={18} aria-hidden="true" />
-                    </button>
-                  </motion.article>
-                ))}
-              </div>
-            </section>
-
-            <section className="reward-panel">
-              <div className="reward-art" aria-hidden="true"><Gift size={38} weight="duotone" /><span>DEMO</span></div>
-              <div>
-                <span className="mini-label">รางวัลถัดไป</span>
-                <h2>{card.badgeName}</h2>
-                <p>ทดลองแลกรางวัลจากแต้มของ session นี้ — ไม่ใช่ entitlement จริง</p>
-              </div>
-              <div className="reward-action">
-                {redeemState === "success" ? (
-                  <span className="redeem-success"><CheckCircle size={20} weight="fill" aria-hidden="true" /> แลกในโหมดสาธิตแล้ว</span>
-                ) : (
-                  <button className="button button-primary" disabled={redeemState === "loading"} onClick={redeemReward} type="button">
-                    {redeemState === "loading" ? "กำลังตรวจสอบ…" : "ทดลองแลกรางวัล"}
-                  </button>
-                )}
-                {redeemState === "error" ? <span className="form-error" role="alert">ยังแลกไม่ได้ กรุณาลองอีกครั้ง</span> : null}
-                <small>ต้นแบบเท่านั้น · การแตะไม่ใช่หลักฐานความเป็นเจ้าของ</small>
-              </div>
-            </section>
-
-            <section className="tap-security-note">
-              <ShieldCheck size={24} weight="duotone" aria-hidden="true" />
-              <div>
-                <strong>ขอบเขตความปลอดภัยที่พูดตรง</strong>
-                <p>
-                  ลิงก์ช่วยลดการเดา card ID แต่ ownership, ความทรงจำส่วนตัว และการแลกรางวัลจริง
-                  ต้องยืนยันเจ้าของแยกต่างหาก
-                </p>
-              </div>
-            </section>
+          <motion.div animate={{ opacity: 1, y: 0 }} className="memory-dashboard w-full" initial={{ opacity: 0, y: 20 }}>
+            <ProfileHero card={card} />
+            <MemoryTimeline memories={memories} />
+            <NextRewardCard card={card} redeemState={redeemState} onRedeem={redeemReward} />
           </motion.div>
         )}
       </main>
     </div>
+  );
+}
+
+// --- REUSABLE CPO-LEVEL COMPONENTS ---
+
+function ProfileHero({ card }: { card: CardData }) {
+  return (
+    <section className="bg-[var(--navy)] text-white pt-8 pb-10 px-6 relative overflow-hidden shadow-soft rounded-b-[40px]">
+      {/* Subtle atmospheric glow */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--pink)]/10 rounded-full blur-[100px] pointer-events-none" />
+      
+      <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-8 items-center md:items-start relative z-10">
+        <div className="flex-1 text-center md:text-left mt-2 md:mt-4 w-full">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-[var(--pink)] text-[11px] font-mono tracking-[0.18em] font-bold uppercase">First Light</p>
+            <span className="bg-white/10 text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full backdrop-blur-md flex items-center gap-2 border border-white/5 font-mono">
+              <span className="w-1.5 h-1.5 bg-[var(--success)] rounded-full animate-pulse" />
+              Memory Unlocked
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-[44px] font-display font-bold tracking-tight mb-2 leading-none text-white">{card.displayName}</h2>
+          <p className="text-[var(--on-navy-muted)] font-body text-[16px] leading-relaxed max-w-md mx-auto md:mx-0">{card.faculty} · {card.cohort}</p>
+        </div>
+        <div className="relative w-28 h-28 md:w-36 md:h-36 shrink-0 rounded-full overflow-hidden border-4 border-white/5 shadow-2xl mx-auto md:mx-0">
+           <Image src={card.imageUrl} alt={card.displayName} fill className="object-cover" />
+        </div>
+      </div>
+      <JourneyStats card={card} />
+    </section>
+  );
+}
+
+function JourneyStats({ card }: { card: CardData }) {
+  return (
+    <div className="max-w-3xl mx-auto mt-10 grid grid-cols-3 gap-4 md:gap-8 border-t border-white/10 pt-8 relative z-10">
+      <div className="flex flex-col items-center md:items-start">
+        <span className="flex items-center gap-1.5 text-[var(--on-navy-muted)] text-[12px] font-bold mb-1.5 tracking-wide"><Coins size={15} /> SOUL Balance</span>
+        <strong className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">{card.points}</strong>
+      </div>
+      <div className="flex flex-col items-center md:items-start border-l border-white/10 pl-4 md:pl-8">
+        <span className="flex items-center gap-1.5 text-[var(--on-navy-muted)] text-[12px] font-bold mb-1.5 tracking-wide"><Trophy size={15} /> Badges</span>
+        <strong className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">3<span className="text-white/30 text-lg ml-1">/ 6</span></strong>
+      </div>
+      <div className="flex flex-col items-center md:items-start border-l border-white/10 pl-4 md:pl-8">
+        <span className="flex items-center gap-1.5 text-[var(--on-navy-muted)] text-[12px] font-bold mb-1.5 tracking-wide"><Sparkle size={15} /> Memories</span>
+        <strong className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">4</strong>
+      </div>
+    </div>
+  );
+}
+
+function TimelineItem({ memory, isLast }: { memory: any, isLast: boolean }) {
+  const isLocked = memory.state === "locked";
+  return (
+    <div className="relative pl-10 md:pl-14 pb-12 group">
+      {!isLast && <div className="absolute top-10 bottom-[-10px] left-[15px] md:left-[19px] w-[2px] bg-[var(--line)]/60" />}
+      
+      <div className={`absolute left-0 md:left-1 top-2 w-8 h-8 md:w-10 md:h-10 rounded-full border-[2.5px] flex items-center justify-center bg-[var(--paper)] z-10 transition-colors
+        ${isLocked ? 'border-[var(--line)] text-[var(--muted-soft)]' : 'border-[var(--pink)] bg-[var(--blush)] text-[var(--pink)]'}`}>
+        {isLocked ? <LockKey size={16} weight="bold" /> : <Sparkle size={16} weight="fill" />}
+      </div>
+
+      <motion.article 
+        whileHover={!isLocked ? { y: -3 } : {}}
+        className={`glass-panel p-6 md:p-7 transition-all duration-300 relative overflow-hidden group-focus-within:ring-2 ring-[var(--pink)]/40 rounded-2xl
+          ${isLocked ? 'opacity-60 grayscale-[0.2] border-dashed' : 'hover:bg-[#fdf2f6] hover:shadow-card hover:border-[var(--pink)]/20 cursor-pointer'}
+        `}
+        tabIndex={!isLocked ? 0 : -1}
+      >
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <span className={`text-[11px] font-mono font-bold tracking-[0.12em] uppercase mb-1.5 block ${isLocked ? 'text-[var(--muted-soft)]' : 'text-[var(--pink-strong)]'}`}>
+              {memory.type} · {memory.date}
+            </span>
+            <h3 className={`font-display text-[22px] md:text-2xl font-bold tracking-tight leading-snug ${isLocked ? 'text-[var(--muted)]' : 'text-[var(--ink)]'}`}>
+              {memory.title}
+            </h3>
+          </div>
+          {!isLocked && (
+            <div className="rounded-full bg-[var(--cream)] flex items-center justify-center text-[var(--pink-strong)] group-hover:bg-[var(--pink)] group-hover:text-white transition-all duration-300 shrink-0 shadow-sm px-3 py-1.5 h-9">
+              <span className="text-xs font-bold font-body opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-[100px] overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap mr-0 group-hover:mr-2">
+                {memory.type === "Badge" ? "ดูเหรียญรางวัล" : memory.type === "Story" ? "อ่านเรื่องราว" : "เปิดความทรงจำ"}
+              </span>
+              <ArrowRight size={17} weight="bold" />
+            </div>
+          )}
+        </div>
+        
+        <p className={`font-body text-[15px] md:text-[16px] leading-relaxed max-w-lg mt-1 ${isLocked ? 'text-[var(--muted-soft)]' : 'text-[var(--muted)]'}`}>
+          {isLocked ? "เหลืออีก 3 เหรียญที่เลือก และ 1 บทสำคัญก่อนถึง Graduation chapter" : memory.copy}
+        </p>
+      </motion.article>
+    </div>
+  );
+}
+
+function MemoryTimeline({ memories }: { memories: any[] }) {
+  return (
+    <section className="max-w-3xl mx-auto px-6 py-20">
+      <div className="mb-14 text-center md:text-left">
+        <p className="text-[var(--pink)] text-[11px] font-mono font-bold tracking-[0.15em] uppercase mb-3">เส้นทางความทรงจำ</p>
+        <h2 className="font-display text-[32px] md:text-[40px] font-bold tracking-tight text-[var(--ink)] leading-tight">เรื่องราวที่เติบโตไปกับคุณ</h2>
+        <p className="text-[var(--muted-soft)] font-body text-[17px] mt-3">ทุกช่วงเวลาคือส่วนหนึ่งของบทต่อไป</p>
+      </div>
+      
+      <div className="relative mt-8">
+        {memories.map((mem, i) => (
+          <TimelineItem key={mem.title} memory={mem} isLast={i === memories.length - 1} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function NextRewardCard({ card, redeemState, onRedeem }: { card: CardData, redeemState: string, onRedeem: () => void }) {
+  return (
+    <section className="max-w-3xl mx-auto px-6 pb-28">
+      <div className="glass-panel p-7 md:p-10 rounded-3xl relative overflow-hidden flex flex-col md:flex-row gap-8 md:items-center border border-[var(--border-subtle)] shadow-soft">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--pink)]/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+        
+        <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-br from-[var(--pink-strong)] to-[var(--pink)] flex items-center justify-center text-white shrink-0 shadow-xl shadow-[var(--pink)]/20">
+          <Gift size={36} weight="duotone" />
+        </div>
+        
+        <div className="flex-1 relative z-10">
+          <span className="text-[var(--pink-strong)] text-[11px] font-mono tracking-[0.15em] uppercase font-bold block mb-2">Pink Sky Digital Keepsake</span>
+          <h3 className="font-display text-[26px] md:text-3xl font-bold text-[var(--ink)] mb-3 tracking-tight">{card.badgeName}</h3>
+          <p className="font-body text-[var(--muted)] text-[16px] max-w-md leading-relaxed">
+            {redeemState === "success" ? "คุณสามารถนำสิทธิ์นี้ไปสร้างของที่ระลึกดิจิทัล Pink Sky ได้แล้ว" : "เหลืออีก 3 เหรียญเพื่อปลดล็อกสิทธิ์สร้างของที่ระลึกดิจิทัล"}
+          </p>
+        </div>
+        
+        <div className="shrink-0 relative z-10 flex flex-col items-center md:items-end gap-3 mt-4 md:mt-0">
+          {redeemState === "success" ? (
+            <>
+              <span className="inline-flex items-center gap-2 text-[var(--success)] font-bold font-body bg-[var(--success)]/10 px-5 py-3 rounded-full text-[15px]">
+                <CheckCircle size={22} weight="fill" /> ปลดล็อกสิทธิ์สร้างของที่ระลึกแล้ว
+              </span>
+              <button className="bg-[var(--ink)] hover:bg-[var(--pink)] text-white font-body font-bold py-3.5 px-7 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 mt-2 text-[15px]">
+                สร้างของที่ระลึก
+              </button>
+            </>
+          ) : (
+            <>
+              <span className="font-display font-bold text-2xl text-[var(--pink-strong)] mb-1">3 <span className="text-lg text-[var(--muted-soft)]">/ 6</span></span>
+              <button 
+                className="bg-[var(--ink)] hover:bg-[var(--pink)] text-white font-body font-bold py-3.5 px-7 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none text-[15px]"
+                onClick={onRedeem}
+                disabled={redeemState === "loading"}
+              >
+                {redeemState === "loading" ? "กำลังตรวจสอบ..." : "ดูเหรียญที่ต้องสะสม"}
+              </button>
+            </>
+          )}
+          <small className="text-[12px] text-[var(--muted-soft)] block text-center md:text-right w-full mt-1 font-mono tracking-wide">โหมดสาธิตเท่านั้น</small>
+        </div>
+      </div>
+    </section>
   );
 }
