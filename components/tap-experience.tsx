@@ -20,6 +20,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Brand } from "./brand";
+import { memories } from "./tap-data";
+import { BadgeCollectionModal, MemoryDetailModal } from "./tap-modals";
 
 type Phase = "ready" | "connecting" | "identity" | "badge" | "unlocked";
 type ApiState = "loading" | "ready" | "invalid";
@@ -49,13 +51,6 @@ const fallbackCard: CardData = {
   primaryRewardId: "reward-pink-sky-wallpaper",
   imageUrl: "/assets/soul-card-hero.webp",
 };
-
-const memories = [
-  { date: "08 AUG 2026", title: "First day on campus", copy: "ประตูมหาวิทยาลัยในเช้าวันแรก และข้อความถึงตัวเองในอีกสี่ปีข้างหน้า", type: "Memory", state: "open" },
-  { date: "24 AUG 2026", title: "Orientation night", copy: "เพลงที่ร้องพร้อมกันครั้งแรก ถูกเก็บไว้ใน capsule ของรุ่น", type: "Story", state: "open" },
-  { date: "12 FEB 2027", title: "Faculty badge earned", copy: "ปลดล็อกจากการร่วมกิจกรรมคณะครั้งที่สาม", type: "Badge", state: "open" },
-  { date: "MAY 2030", title: "Graduation chapter", copy: "จะเปิดเมื่อถึงวันสำเร็จการศึกษา", type: "Future", state: "locked" },
-];
 
 const sleep = (duration: number) => new Promise((resolve) => window.setTimeout(resolve, duration));
 
@@ -146,10 +141,31 @@ export function TapExperience({ token }: { token: string }) {
   const [apiState, setApiState] = useState<ApiState>("loading");
   const [card, setCard] = useState<CardData>({ ...fallbackCard, token });
   const [phase, setPhase] = useState<Phase>("ready");
+  const [selectedMemoryIndex, setSelectedMemoryIndex] = useState<number | null>(null);
+  const [isBadgeCollectionOpen, setIsBadgeCollectionOpen] = useState(false);
+  const [selectedBadgeIds, setSelectedBadgeIds] = useState<string[]>([]);
   const [redeemState, setRedeemState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [liveMessage, setLiveMessage] = useState("พร้อมจำลองการแตะ NFC");
   const running = useRef(false);
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("soul_demo_badges");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) setSelectedBadgeIds(parsed);
+      } catch {}
+    } else {
+      setSelectedBadgeIds(["badge_first_light", "badge_orientation", "badge_faculty_pride"]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedBadgeIds.length > 0) {
+      localStorage.setItem("soul_demo_badges", JSON.stringify(selectedBadgeIds));
+    }
+  }, [selectedBadgeIds]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -320,19 +336,48 @@ export function TapExperience({ token }: { token: string }) {
 
         {phase === "unlocked" && (
           <motion.div animate={{ opacity: 1, y: 0 }} className="memory-dashboard w-full" initial={{ opacity: 0, y: 20 }}>
-            <ProfileHero card={card} />
-            <MemoryTimeline memories={memories} />
-            <NextRewardCard card={card} redeemState={redeemState} onRedeem={redeemReward} />
+            <ProfileHero card={card} selectedBadgeIds={selectedBadgeIds} />
+            <MemoryTimeline memories={memories} onSelectMemory={setSelectedMemoryIndex} selectedBadgeIds={selectedBadgeIds} onOpenBadges={() => setIsBadgeCollectionOpen(true)} />
+            <NextRewardCard card={card} onOpenBadges={() => setIsBadgeCollectionOpen(true)} selectedBadgeIds={selectedBadgeIds} onRedeem={redeemReward} />
           </motion.div>
         )}
       </main>
+
+      <AnimatePresence>
+        {selectedMemoryIndex !== null && (
+          <MemoryDetailModal
+            memory={memories[selectedMemoryIndex]}
+            memoriesCount={memories.length}
+            currentIndex={selectedMemoryIndex}
+            onClose={() => setSelectedMemoryIndex(null)}
+            onNext={() => setSelectedMemoryIndex(Math.min(memories.length - 1, selectedMemoryIndex + 1))}
+            onPrev={() => setSelectedMemoryIndex(Math.max(0, selectedMemoryIndex - 1))}
+            onOpenBadges={() => {
+              setSelectedMemoryIndex(null);
+              setIsBadgeCollectionOpen(true);
+            }}
+            selectedBadgeIds={selectedBadgeIds}
+          />
+        )}
+        {isBadgeCollectionOpen && (
+          <BadgeCollectionModal
+            selectedBadgeIds={selectedBadgeIds}
+            onToggleBadge={(id) => {
+              setSelectedBadgeIds(prev => 
+                prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id]
+              );
+            }}
+            onClose={() => setIsBadgeCollectionOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 // --- REUSABLE CPO-LEVEL COMPONENTS ---
 
-function ProfileHero({ card }: { card: CardData }) {
+function ProfileHero({ card, selectedBadgeIds }: { card: CardData, selectedBadgeIds: string[] }) {
   return (
     <section className="bg-[var(--navy)] text-white pt-8 pb-10 px-6 relative overflow-hidden shadow-soft rounded-b-[40px]">
       {/* Subtle atmospheric glow */}
@@ -354,12 +399,12 @@ function ProfileHero({ card }: { card: CardData }) {
            <Image src={card.imageUrl} alt={card.displayName} fill className="object-cover" />
         </div>
       </div>
-      <JourneyStats card={card} />
+      <JourneyStats card={card} selectedBadgeIds={selectedBadgeIds} />
     </section>
   );
 }
 
-function JourneyStats({ card }: { card: CardData }) {
+function JourneyStats({ card, selectedBadgeIds }: { card: CardData, selectedBadgeIds: string[] }) {
   return (
     <div className="max-w-3xl mx-auto mt-10 grid grid-cols-3 gap-4 md:gap-8 border-t border-white/10 pt-8 relative z-10">
       <div className="flex flex-col items-center md:items-start">
@@ -368,7 +413,7 @@ function JourneyStats({ card }: { card: CardData }) {
       </div>
       <div className="flex flex-col items-center md:items-start border-l border-white/10 pl-4 md:pl-8">
         <span className="flex items-center gap-1.5 text-[var(--on-navy-muted)] text-[12px] font-bold mb-1.5 tracking-wide"><Trophy size={15} /> Badges</span>
-        <strong className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">3<span className="text-white/30 text-lg ml-1">/ 6</span></strong>
+        <strong className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">{selectedBadgeIds.length}<span className="text-white/30 text-lg ml-1">/ 6</span></strong>
       </div>
       <div className="flex flex-col items-center md:items-start border-l border-white/10 pl-4 md:pl-8">
         <span className="flex items-center gap-1.5 text-[var(--on-navy-muted)] text-[12px] font-bold mb-1.5 tracking-wide"><Sparkle size={15} /> Memories</span>
@@ -378,7 +423,7 @@ function JourneyStats({ card }: { card: CardData }) {
   );
 }
 
-function TimelineItem({ memory, isLast }: { memory: any, isLast: boolean }) {
+function TimelineItem({ memory, isLast, onClick }: { memory: any, isLast: boolean, onClick: () => void }) {
   const isLocked = memory.state === "locked";
   return (
     <div className="relative pl-10 md:pl-14 pb-12 group">
@@ -390,11 +435,21 @@ function TimelineItem({ memory, isLast }: { memory: any, isLast: boolean }) {
       </div>
 
       <motion.article 
-        whileHover={!isLocked ? { y: -3 } : {}}
-        className={`glass-panel p-6 md:p-7 transition-all duration-300 relative overflow-hidden group-focus-within:ring-2 ring-[var(--pink)]/40 rounded-2xl
-          ${isLocked ? 'opacity-60 grayscale-[0.2] border-dashed' : 'hover:bg-[#fdf2f6] hover:shadow-card hover:border-[var(--pink)]/20 cursor-pointer'}
+        whileHover={{ y: -3 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onClick}
+        onKeyDown={(e: any) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onClick();
+          }
+        }}
+        className={`glass-panel p-6 md:p-7 transition-all duration-300 relative overflow-hidden group-focus-within:ring-2 ring-[var(--pink)]/40 rounded-2xl cursor-pointer
+          ${isLocked ? 'opacity-70 border-dashed hover:shadow-card hover:bg-white/50' : 'hover:bg-[#fdf2f6] hover:shadow-card hover:border-[var(--pink)]/20'}
         `}
-        tabIndex={!isLocked ? 0 : -1}
+        tabIndex={0}
+        role="button"
+        aria-label={`เปิดรายละเอียด ${memory.title}`}
       >
         <div className="flex justify-between items-start mb-3">
           <div>
@@ -405,25 +460,29 @@ function TimelineItem({ memory, isLast }: { memory: any, isLast: boolean }) {
               {memory.title}
             </h3>
           </div>
-          {!isLocked && (
+          {!isLocked ? (
             <div className="rounded-full bg-[var(--cream)] flex items-center justify-center text-[var(--pink-strong)] group-hover:bg-[var(--pink)] group-hover:text-white transition-all duration-300 shrink-0 shadow-sm px-3 py-1.5 h-9">
               <span className="text-xs font-bold font-body opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-[100px] overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap mr-0 group-hover:mr-2">
                 {memory.type === "Badge" ? "ดูเหรียญรางวัล" : memory.type === "Story" ? "อ่านเรื่องราว" : "เปิดความทรงจำ"}
               </span>
               <ArrowRight size={17} weight="bold" />
             </div>
+          ) : (
+            <div className="rounded-full bg-[var(--cream)] flex items-center justify-center text-[var(--muted)] transition-all duration-300 shrink-0 shadow-sm w-9 h-9">
+              <LockKey size={17} weight="bold" />
+            </div>
           )}
         </div>
         
         <p className={`font-body text-[15px] md:text-[16px] leading-relaxed max-w-lg mt-1 ${isLocked ? 'text-[var(--muted-soft)]' : 'text-[var(--muted)]'}`}>
-          {isLocked ? "เหลืออีก 3 เหรียญที่เลือก และ 1 บทสำคัญก่อนถึง Graduation chapter" : memory.copy}
+          {isLocked ? "คลิกเพื่อดูเงื่อนไขการปลดล็อก" : memory.copy}
         </p>
       </motion.article>
     </div>
   );
 }
 
-function MemoryTimeline({ memories }: { memories: any[] }) {
+function MemoryTimeline({ memories, onSelectMemory, selectedBadgeIds, onOpenBadges }: { memories: any[], onSelectMemory: (i: number) => void, selectedBadgeIds: string[], onOpenBadges: () => void }) {
   return (
     <section className="max-w-3xl mx-auto px-6 py-20">
       <div className="mb-14 text-center md:text-left">
@@ -434,14 +493,18 @@ function MemoryTimeline({ memories }: { memories: any[] }) {
       
       <div className="relative mt-8">
         {memories.map((mem, i) => (
-          <TimelineItem key={mem.title} memory={mem} isLast={i === memories.length - 1} />
+          <TimelineItem key={mem.title} memory={mem} isLast={i === memories.length - 1} onClick={() => onSelectMemory(i)} />
         ))}
       </div>
     </section>
   );
 }
 
-function NextRewardCard({ card, redeemState, onRedeem }: { card: CardData, redeemState: string, onRedeem: () => void }) {
+function NextRewardCard({ card, onOpenBadges, selectedBadgeIds, onRedeem }: { card: CardData, onOpenBadges: () => void, selectedBadgeIds: string[], onRedeem: () => void }) {
+  const badgeCount = selectedBadgeIds.length;
+  const isUnlocked = badgeCount >= 6;
+  const needed = Math.max(0, 6 - badgeCount);
+
   return (
     <section className="max-w-3xl mx-auto px-6 pb-28">
       <div className="glass-panel p-7 md:p-10 rounded-3xl relative overflow-hidden flex flex-col md:flex-row gap-8 md:items-center border border-[var(--border-subtle)] shadow-soft">
@@ -455,29 +518,31 @@ function NextRewardCard({ card, redeemState, onRedeem }: { card: CardData, redee
           <span className="text-[var(--pink-strong)] text-[11px] font-mono tracking-[0.15em] uppercase font-bold block mb-2">Pink Sky Digital Keepsake</span>
           <h3 className="font-display text-[26px] md:text-3xl font-bold text-[var(--ink)] mb-3 tracking-tight">{card.badgeName}</h3>
           <p className="font-body text-[var(--muted)] text-[16px] max-w-md leading-relaxed">
-            {redeemState === "success" ? "คุณสามารถนำสิทธิ์นี้ไปสร้างของที่ระลึกดิจิทัล Pink Sky ได้แล้ว" : "เหลืออีก 3 เหรียญเพื่อปลดล็อกสิทธิ์สร้างของที่ระลึกดิจิทัล"}
+            {isUnlocked ? "คุณสามารถนำสิทธิ์นี้ไปสร้างของที่ระลึกดิจิทัล Pink Sky ได้แล้ว" : `เหลืออีก ${needed} เหรียญเพื่อปลดล็อกสิทธิ์สร้างของที่ระลึกดิจิทัล`}
           </p>
         </div>
         
         <div className="shrink-0 relative z-10 flex flex-col items-center md:items-end gap-3 mt-4 md:mt-0">
-          {redeemState === "success" ? (
+          {isUnlocked ? (
             <>
               <span className="inline-flex items-center gap-2 text-[var(--success)] font-bold font-body bg-[var(--success)]/10 px-5 py-3 rounded-full text-[15px]">
                 <CheckCircle size={22} weight="fill" /> ปลดล็อกสิทธิ์สร้างของที่ระลึกแล้ว
               </span>
-              <button className="bg-[var(--ink)] hover:bg-[var(--pink)] text-white font-body font-bold py-3.5 px-7 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 mt-2 text-[15px]">
+              <button 
+                className="bg-[var(--ink)] hover:bg-[var(--pink)] text-white font-body font-bold py-3.5 px-7 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 mt-2 text-[15px]"
+                onClick={onRedeem}
+              >
                 สร้างของที่ระลึก
               </button>
             </>
           ) : (
             <>
-              <span className="font-display font-bold text-2xl text-[var(--pink-strong)] mb-1">3 <span className="text-lg text-[var(--muted-soft)]">/ 6</span></span>
+              <span className="font-display font-bold text-2xl text-[var(--pink-strong)] mb-1">{badgeCount} <span className="text-lg text-[var(--muted-soft)]">/ 6</span></span>
               <button 
-                className="bg-[var(--ink)] hover:bg-[var(--pink)] text-white font-body font-bold py-3.5 px-7 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none text-[15px]"
-                onClick={onRedeem}
-                disabled={redeemState === "loading"}
+                className="bg-[var(--ink)] hover:bg-[var(--pink)] text-white font-body font-bold py-3.5 px-7 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 text-[15px]"
+                onClick={onOpenBadges}
               >
-                {redeemState === "loading" ? "กำลังตรวจสอบ..." : "ดูเหรียญที่ต้องสะสม"}
+                ดูเหรียญที่ต้องสะสม
               </button>
             </>
           )}
